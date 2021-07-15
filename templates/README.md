@@ -19,7 +19,7 @@
     
 - Create the public ip address
     ```bash
-    DEPLOY_ENV=beta rake kubernetes_helper:run_command "gcloud compute addresses create #{ingress.ip_name} --global"
+    DEPLOY_ENV=beta kubernetes_helper run_command "gcloud compute addresses create #{ingress.ip_name} --global"
     # gcloud compute addresses list # to list static ips generated 
     ```
     
@@ -27,37 +27,37 @@
     Open and register secret values in `kubernetes/secrets.yml`     
     Note: Enter base64 encoded values
     ```bash
-    DEPLOY_ENV=beta rake kubernetes_helper:run_yml 'secrets.yml' 'kubectl create'
+    DEPLOY_ENV=beta kubernetes_helper run_yml 'secrets.yml' 'kubectl create'
     # kubectl get secrets # to list all secrets registered
     ```
     
 - Create service to connect pods and ingress
     ```bash
-    DEPLOY_ENV=beta rake kubernetes_helper:run_yml 'service.yml' 'kubectl create'
+    DEPLOY_ENV=beta kubernetes_helper run_yml 'service.yml' 'kubectl create'
     # kubectl get services # to list all registered services
     ```
     
 - Register shared cloudsql proxy configuration (only if not exists)
     ```bash
-    DEPLOY_ENV=beta rake kubernetes_helper:run_command "kubectl create secret generic #{deployment.cloud_secret_name} --from-file=credentials.json=<path-to-downloaded/credentials.json>"
+    DEPLOY_ENV=beta kubernetes_helper run_command "kubectl create secret generic #{deployment.cloud_secret_name} --from-file=credentials.json=<path-to-downloaded/credentials.json>"
     ```
     
 - Register the ssl certificates (Using lets encrypt)
     ```bash
-    DEPLOY_ENV=beta rake kubernetes_helper:run_yml 'certificate.yml' 'kubectl create'
+    DEPLOY_ENV=beta kubernetes_helper run_yml 'certificate.yml' 'kubectl create'
     # kubectl get ManagedCertificate # to list all certificates
   ```
   Note: Wildcard domains are not supported
     
 - Create ingress to register hosts, certificates and connect with service
     ```bash
-    DEPLOY_ENV=beta rake kubernetes_helper:run_yml 'ingress.yml' 'kubectl create'
+    DEPLOY_ENV=beta kubernetes_helper run_yml 'ingress.yml' 'kubectl create'
     # kubectl get ingress # to list all registered ingresses
     ```
     
 - Create deployment (match Dockerfile exposed port with containerPort, register env vars from secrets.yml, indicate the correct container image)
     ```bash
-    DEPLOY_ENV=beta rake kubernetes_helper:run_yml 'deployment.yml' 'kubectl create'
+    DEPLOY_ENV=beta kubernetes_helper run_yml 'deployment.yml' 'kubectl create'
     # kubectl get deployment # to list deployments
     ```
 
@@ -71,7 +71,7 @@
   
 - Other settings
   ```bash
-    DEPLOY_ENV=beta rake kubernetes_helper:run_yml 'deployment.yml' 'kubectl apply'
+    DEPLOY_ENV=beta kubernetes_helper run_yml 'deployment.yml' 'kubectl apply'
   ```
 
 ## Configure continuous deployment for github actions
@@ -85,5 +85,5 @@
   
 * Add action to run deployment:
   ```bash
-    DEPLOY_ENV=beta rake kubernetes_helper:run_DEPLOYMENT 'cd_gcloud.sh'
+    DEPLOY_ENV=beta kubernetes_helper run_DEPLOYMENT 'cd_gcloud.sh'
   ```  

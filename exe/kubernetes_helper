@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 require 'kubernetes_helper'
-puts "$$$$$$$$$$$$$$ called executable:: #{ARGV.inspect}"
+
 case ARGV[0]
 when 'run_command'
   KubernetesHelper::Core.new(ENV['DEPLOY_ENV']).run_command(ARGV[1])
