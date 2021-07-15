@@ -28,6 +28,6 @@ module KubernetesHelper
 
   def self.run_cmd(cmd)
     res = Kernel.system cmd
-    Kernel.abort("::::::::CD: failed running command: #{cmd}") unless res
+    Kernel.abort("::::::::CD: failed running command: #{cmd} ==> #{res}") unless res
   end
 end
