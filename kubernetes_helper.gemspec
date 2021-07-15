@@ -19,9 +19,12 @@ Gem::Specification.new do |spec|
   spec.metadata['source_code_uri'] = 'https://github.com/owen2345/kubernetes_helper'
   spec.metadata['changelog_uri'] = 'https://github.com/owen2345/kubernetes_helper'
 
-  spec.bindir = 'exe'
-  spec.files = Dir['{app,config,db,lib}/**/*', 'MIT-LICENSE', 'Rakefile', 'README.md']
+  spec.files = Dir['{app,config,db,lib,exe}/**/*', 'MIT-LICENSE', 'Rakefile', 'README.md']
 
   # spec.add_development_dependency 'bundler'
   spec.add_development_dependency 'rake'
+
+  spec.bindir        = 'exe'
+  spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
+  spec.require_paths = ['lib']
 end

@@ -1,0 +1,28 @@
+#!/usr/bin/env ruby
+
+require 'kubernetes_helper'
+puts "$$$$$$$$$$$$$$ called executable:: #{ARGV.inspect}"
+case ARGV[0]
+when 'run_command'
+  KubernetesHelper::Core.new(ENV['DEPLOY_ENV']).run_command(ARGV[1])
+
+when 'run_deployment'
+  script_path = KubernetesHelper.settings_path(ARGV[1])
+  KubernetesHelper::Core.new(ENV['DEPLOY_ENV']).run_cd_script(script_path)
+
+when 'run_yml'
+  output_path = KubernetesHelper.settings_path('tmp_result.yml')
+  KubernetesHelper::Core
+    .new(ENV['DEPLOY_ENV'])
+    .parse_yml_file(KubernetesHelper.settings_path(ARGV[1]), output_path)
+  KubernetesHelper.run_cmd("#{ARGV[2]} -f #{output_path}")
+
+when 'generate'
+  # TODO: ...
+
+when 'verify_yml'
+  # TODO: ...
+
+else
+  puts 'Invalid command'
+end
