@@ -11,7 +11,6 @@ module KubernetesHelper
     def initialize(env_name)
       env_name = env_name.to_s.length > 1 ? env_name : 'beta'
       @config_values = KubernetesHelper.load_settings(env_name)
-      puts "::::;loaded settings: #{@config_values.inspect}"
     end
 
     def parse_yml_file(file_path, output_path)

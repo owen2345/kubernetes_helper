@@ -5,6 +5,6 @@ namespace :kubernetes_helper do
         Sample: DEPLOY_ENV=beta rake kubernetes_helper:run_command
                 "gcloud compute addresses create \#{ingress.ip_name} --global"'
   task :run_command do
-    KubernetesHelper::Core.new(ENV['DEPLOY_ENV']).run_command(ARGV[0])
+    KubernetesHelper::Core.new(ENV['DEPLOY_ENV']).run_command(ARGV[1])
   end
 end
