@@ -1,0 +1,72 @@
+documents:
+  - apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      name: &app_name #{deployment.name}
+    spec:
+      replicas: #{deployment.replicas}
+      selector:
+        matchLabels:
+          name: *app_name
+      strategy:
+        type: RollingUpdate
+        rollingUpdate:
+          maxSurge: 1
+          maxUnavailable: 1
+      minReadySeconds: 5
+      template:
+        metadata:
+          labels:
+            name: *app_name
+        spec:
+          containers:
+            - image: '#{continuous_deployment.image_name}:latest'
+              name: *app_name
+              import_secrets: ['secrets.yml', '#{secrets.name}']
+              env:
+                - name: RAILS_ENV
+                  value: '#{deployment.rails_env}'
+              ports:
+                - containerPort: &port 3000
+                  name: '#{service.backend_port_name}'
+              livenessProbe:
+                httpGet:
+                  path: /health_check
+                  port: *port
+                initialDelaySeconds: 50
+                timeoutSeconds: 3
+                periodSeconds: 15
+              readinessProbe:
+                httpGet:
+                  path: /read_health_check
+                  port: *port
+                initialDelaySeconds: 50
+                timeoutSeconds: 5
+                periodSeconds: 60
+              volumeMounts:
+                - &log_volume
+                  name: applog
+                  mountPath: /app/log
+
+            - image: gcr.io/cloudsql-docker/gce-proxy:1.09 # Cloud sql proxy
+              name: cloudsql-proxy
+              command: ["/cloud_sql_proxy", "--dir=/cloudsql",
+                        "-instances=#{deployment.cloud_sql_instance}=tcp:5432",
+                        "-credential_file=/secrets/cloudsql/credentials.json"]
+              volumeMounts:
+                - name: cloudsql-creds
+                  mountPath: /secrets/cloudsql
+                  readOnly: true
+
+            - name: print-logs # print to stdout all log files
+              image: busybox
+              command: [/bin/sh, -c, 'until find log/*.log; do sleep 1; done; tail -n+1 -f log/*.log']
+              volumeMounts:
+                - *log_volume
+
+          volumes:
+            - name: cloudsql-creds
+              secret:
+                secretName: '#{deployment.cloud_secret_name}'
+            - name: applog
+              emptyDir: {}

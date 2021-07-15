@@ -1,0 +1,27 @@
+---
+# used to increase request timeout
+apiVersion: cloud.google.com/v1beta1
+kind: BackendConfig
+metadata:
+  name: '#{service.config_name}'
+spec:
+  timeoutSec: 1800
+
+---
+
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: '#{service.name}'
+  annotations:
+    beta.cloud.google.com/backend-config: '{"ports": {"80":"#{service.config_name}"}}'
+spec:
+  selector:
+    name: '#{deployment.name}'
+  type: NodePort
+  ports:
+    - port: 80
+      protocol: TCP
+      name: '#{service.port_name}'
+      targetPort: '#{service.backend_port_name}'

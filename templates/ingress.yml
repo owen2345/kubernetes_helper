@@ -1,0 +1,16 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: '#{ingress.name}'
+  annotations:
+    kubernetes.io/ingress.class: "gce"
+    kubernetes.io/ingress.global-static-ip-name: "#{ingress.ip_name}"
+    kubernetes.io/ingress.allow-http: "true"
+    ingress.kubernetes.io/ssl-redirect: "true"
+
+    networking.gke.io/managed-certificates: '#{certificate.name}'
+
+spec:
+  backend:
+    serviceName: '#{service.name}'
+    servicePort: '#{service.port_name}'
