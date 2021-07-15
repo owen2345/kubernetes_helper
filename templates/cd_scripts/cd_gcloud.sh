@@ -2,7 +2,7 @@
 
 # expected vars: AUTH_TOKEN, DEPLOYMENTS, IMAGE_NAME, CLUSTER_NAME, PROJECT_NAME
 
-# static vars
+CI_COMMIT_SHA=$(git rev-parse --verify HEAD)
 DEPLOY_NAME="${IMAGE_NAME}:${CI_COMMIT_SHA}"
 LATEST_NAME="${IMAGE_NAME}:latest"
 GOOGLE_AUTH_PATH="./google-auth.json"
@@ -19,7 +19,8 @@ gcloud docker --authorize-only --project $PROJECT_NAME
 gcloud container clusters get-credentials $CLUSTER_NAME --region $KUBE_REGION
 
 ## Build and push containers
-docker build -f ../Dockerfile -t $DEPLOY_NAME .
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+docker build -f "$SCRIPT_DIR/../Dockerfile" -t $DEPLOY_NAME .
 docker tag $DEPLOY_NAME $LATEST_NAME
 docker push $DEPLOY_NAME
 docker push $LATEST_NAME
