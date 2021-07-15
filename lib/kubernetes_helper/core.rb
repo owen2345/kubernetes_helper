@@ -36,13 +36,11 @@ module KubernetesHelper
     end
 
     # TODO: use variables replacement logic instead of passing vars to script
-    def run_cd_script(script_name)
+    def run_cd_script(script_path)
       deployment_values = @config_values[:continuous_deployment]
       env_vars = deployment_values.map { |k, v| "#{k.upcase}=#{v}" }.join(' ')
-      bash_script_path = File.join(yml_files_dir, script_name)
-
-      KubernetesHelper.run_cmd("chmod +x #{bash_script_path}")
-      KubernetesHelper.run_cmd("#{env_vars} #{bash_script_path}")
+      KubernetesHelper.run_cmd("chmod +x #{script_path}")
+      KubernetesHelper.run_cmd("#{env_vars} #{script_path}")
     end
 
     private
@@ -50,7 +48,8 @@ module KubernetesHelper
     # Format: import_secrets: [secrets_yml_path, secrets_name]
     # Sample: import_secrets: ['./secrets.yml', 'packing-beta-secrets']
     def import_secrets(path, secrets_name)
-      data = YAML.load(File.read(File.join(yml_files_dir, path))) # rubocop:disable Security/YAMLLoad
+      path = KubernetesHelper.settings_path(path)
+      data = YAML.load(File.read(path)) # rubocop:disable Security/YAMLLoad
       data['data'].keys.map do |secret|
         {
           'name' => secret.upcase,
@@ -88,10 +87,6 @@ module KubernetesHelper
           f << document.to_yaml
         end
       end
-    end
-
-    def yml_files_dir
-      __dir__
     end
   end
 end

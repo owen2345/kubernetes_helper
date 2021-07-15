@@ -6,8 +6,8 @@ settings = {
   beta: {
     service: {
       name: beta_app_name,
-      port_name: "#{beta_app_name}-http", # max 15 characters
-      backend_port_name: "#{beta_app_name}-bport", # max 15 characters
+      port_name: 'http-port', # max 15 characters
+      backend_port_name: 'b-port', # max 15 characters
       config_name: "#{beta_app_name}-backend-config"
     },
     deployment: {
@@ -41,8 +41,8 @@ settings = {
   production: {
     service: {
       name: "#{app_name}-service",
-      port_name: "#{app_name}-http", # max 15 characters
-      backend_port_name: "#{app_name}-bport", # max 15 characters
+      port_name: 'http-port', # max 15 characters
+      backend_port_name: 'b-port', # max 15 characters
       config_name: "#{app_name}-backend-config"
     },
     deployment: {
