@@ -34,11 +34,13 @@ module KubernetesHelper
       KubernetesHelper.run_cmd(command)
     end
 
-    # TODO: use variables replacement logic instead of passing vars to script
     def run_cd_script(script_path)
-      content = File.read(script_path)
-      content = replace_config_variables(content)
-      KubernetesHelper.run_cmd(content, script_path)
+      content = replace_config_variables(File.read(script_path))
+      tmp_file = KubernetesHelper.settings_path('tmp_cd.sh')
+      File.write(tmp_file, content)
+      KubernetesHelper.run_cmd("chmod +x #{tmp_file}")
+      KubernetesHelper.run_cmd(tmp_file)
+      File.delete(tmp_file)
     end
 
     private
