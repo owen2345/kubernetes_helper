@@ -27,7 +27,7 @@ gcloud container clusters get-credentials $CLUSTER_NAME --region $CLUSTER_REGION
 
 
 ## Build and push containers
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+SCRIPT_DIR=`dirname "$(realpath -s "$0")"`
 docker build -f "$SCRIPT_DIR/../Dockerfile" -t $DEPLOY_NAME .
 docker tag $DEPLOY_NAME $LATEST_NAME
 docker push $DEPLOY_NAME
