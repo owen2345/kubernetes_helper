@@ -5,7 +5,7 @@ require 'kubernetes_helper/railtie' if defined?(Rails)
 
 module KubernetesHelper
   class Error < StandardError; end
-  FOLDER_NAME = 'kubernetes'
+  FOLDER_NAME = '.kubernetes'
 
   def self.settings(settings = nil)
     @settings = settings if settings
@@ -26,8 +26,8 @@ module KubernetesHelper
     path
   end
 
-  def self.run_cmd(cmd)
+  def self.run_cmd(cmd, title = nil)
     res = Kernel.system cmd
-    Kernel.abort("::::::::CD: failed running command: #{cmd} ==> #{caller}") if res != true
+    Kernel.abort("::::::::CD: failed running command: #{title || cmd} ==> #{caller}") if res != true
   end
 end
