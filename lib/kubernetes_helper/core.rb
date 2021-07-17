@@ -36,10 +36,9 @@ module KubernetesHelper
 
     # TODO: use variables replacement logic instead of passing vars to script
     def run_cd_script(script_path)
-      deployment_values = @config_values[:continuous_deployment]
-      env_vars = deployment_values.map { |k, v| "#{k.upcase}=#{v}" }.join(' ')
-      KubernetesHelper.run_cmd("chmod +x #{script_path}")
-      KubernetesHelper.run_cmd("#{env_vars} #{script_path}")
+      content = File.read(script_path)
+      content = replace_config_variables(content)
+      KubernetesHelper.run_cmd(content, script_path)
     end
 
     private

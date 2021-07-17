@@ -29,11 +29,11 @@ settings = {
       ip_name: "#{beta_app_name}-static-ip"
     },
     continuous_deployment: {
-      auth_token: ENV['BETA_CLOUD_TOKEN'],
       deployments: beta_app_name, # supports for multiple (comma separated, sample: 'my_app,my_app_sidekiq')
       image_name: "gcr.io/my-account/#{beta_app_name}",
+      project_name: 'my-project-name',
       cluster_name: 'my-cluster-name',
-      project_name: 'my-project-name'
+      cluster_region: 'europe-west4-a'
     }
   },
 
@@ -64,11 +64,11 @@ settings = {
       ip_name: "#{app_name}-static-ip"
     },
     continuous_deployment: {
-      auth_token: ENV['PROD_CLOUD_TOKEN'],
       deployments: app_name,
       image_name: "gcr.io/my-account/#{app_name}",
+      project_name: 'my-project-name',
       cluster_name: 'my-cluster-name',
-      project_name: 'my-project-name'
+      cluster_region: 'europe-west4-a'
     }
   }
 }
