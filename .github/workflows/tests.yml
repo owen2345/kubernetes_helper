@@ -3,7 +3,7 @@ name: App tests
 on:
   push:
     branches:
-      - master
+      - main
       - staging
   pull_request:
 
