@@ -1,4 +1,6 @@
-$:.push File.expand_path("lib", __dir__)
+# frozen_string_literal: true
+
+$:.push File.expand_path('lib', __dir__) # rubocop:disable Style/SpecialGlobalVars
 require_relative 'lib/kubernetes_helper/version'
 
 Gem::Specification.new do |spec|

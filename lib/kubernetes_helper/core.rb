@@ -2,6 +2,8 @@
 
 require 'yaml'
 require 'json'
+# require 'byebug' rescue nil
+
 module KubernetesHelper
   class Core
     # @return [Hash]
@@ -15,7 +17,7 @@ module KubernetesHelper
 
     def parse_yml_file(file_path, output_path)
       parsed_content = replace_config_variables(File.read(file_path))
-      old_yaml = YAML.load_stream(parsed_content) # rubocop:disable Security/YAMLLoad
+      old_yaml = YAML.load_stream(parsed_content)
       json_data = old_yaml.to_json # fix to skip anchors
       yml_data = JSON.parse(json_data)
       export_documents(yml_data, output_path)
@@ -73,20 +75,28 @@ module KubernetesHelper
       containers = document.dig('spec', 'template', 'spec', 'containers') || []
       containers.each do |container|
         if container['import_secrets']
-          container['env'] = container['env'] + import_secrets(*container['import_secrets'])
+          container['env'] = (container['env'] || []) + import_secrets(*container['import_secrets'])
           container.delete('import_secrets')
         end
       end
     end
 
     def export_documents(yml_data, file_path)
-      documents = yml_data.delete('documents') || Array(yml_data)
       File.open(file_path, 'w+') do |f|
-        documents.each do |document|
+        parse_documents(yml_data).each do |document|
           parse_import_secrets(document)
-          f << document.to_yaml
+          f.write(document.to_yaml)
         end
       end
+    end
+
+    # @return [Array<Hash>]
+    def parse_documents(yml_data)
+      documents = []
+      Array(yml_data).each do |document|
+        document['documents'] ? documents.push(*document['documents']) : documents.push(document)
+      end
+      documents
     end
   end
 end
