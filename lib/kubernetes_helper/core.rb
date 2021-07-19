@@ -17,7 +17,7 @@ module KubernetesHelper
       parsed_content = replace_config_variables(File.read(file_path))
       old_yaml = YAML.load_stream(parsed_content) # rubocop:disable Security/YAMLLoad
       json_data = old_yaml.to_json # fix to skip anchors
-      yml_data = YAML.load_stream(json_data) # rubocop:disable Security/YAMLLoad
+      yml_data = JSON.parse(json_data)
       export_documents(yml_data, output_path)
     end
 
@@ -79,8 +79,8 @@ module KubernetesHelper
       end
     end
 
-    def export_documents(data, file_path)
-      documents = data.delete('documents') || [data]
+    def export_documents(yml_data, file_path)
+      documents = yml_data.delete('documents') || Array(yml_data)
       File.open(file_path, 'w+') do |f|
         documents.each do |document|
           parse_import_secrets(document)
