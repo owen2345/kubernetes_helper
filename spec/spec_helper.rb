@@ -1,5 +1,5 @@
-require "bundler/setup"
-require "kubernetes_helper"
+require 'bundler/setup'
+require 'kubernetes_helper'
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
@@ -10,5 +10,12 @@ RSpec.configure do |config|
 
   config.expect_with :rspec do |c|
     c.syntax = :expect
+  end
+
+  config.before(:each) do
+    path = File.join(__dir__, '../templates')
+    allow(KubernetesHelper).to receive(:settings_path) do |name = nil|
+      name ? File.join(path, name) : path
+    end
   end
 end
