@@ -1,6 +1,7 @@
-#!/bin/sh
+#!/bin/bash
+set -e
 
-# expected ENV VAR "AUTH_TOKEN"
+# expected ENV VAR "KB_AUTH_TOKEN"
 
 DEPLOYMENTS="#{continuous_deployment.deployments}"
 IMAGE_NAME="#{continuous_deployment.image_name}"
@@ -11,14 +12,16 @@ CLUSTER_REGION="#{continuous_deployment.cluster_region}"
 CI_COMMIT_SHA=$(git rev-parse --verify HEAD)
 DEPLOY_NAME="${IMAGE_NAME}:${CI_COMMIT_SHA}"
 LATEST_NAME="${IMAGE_NAME}:latest"
-AUTH_PATH="./k8s-auth-token.json"
-echo "$AUTH_TOKEN" > "$AUTH_PATH"
+SCRIPT_DIR=`dirname "$(realpath -s "$0")"`
+AUTH_PATH="$SCRIPT_DIR/k8s-auth-token.json"
+echo $KB_AUTH_TOKEN >> $AUTH_PATH
 
 ## ***** GOOGLE CONNECTOR
 # Download and install Google Cloud SDK
-if ! gcloud --version &> /dev/null; then
+if [ -z "$(which gcloud)" ]; then
   export CLOUDSDK_CORE_DISABLE_PROMPTS=1; curl https://sdk.cloud.google.com | bash && source /home/runner/google-cloud-sdk/path.bash.inc &&  gcloud --quiet components update kubectl
 fi
+
 # Connect to cluster
 gcloud auth activate-service-account --key-file $AUTH_PATH --project $PROJECT_NAME
 gcloud docker --authorize-only --project $PROJECT_NAME
@@ -27,7 +30,6 @@ gcloud container clusters get-credentials $CLUSTER_NAME --region $CLUSTER_REGION
 
 
 ## Build and push containers
-SCRIPT_DIR=`dirname "$(realpath -s "$0")"`
 docker build -f "$SCRIPT_DIR/../Dockerfile" -t $DEPLOY_NAME .
 docker tag $DEPLOY_NAME $LATEST_NAME
 docker push $DEPLOY_NAME
