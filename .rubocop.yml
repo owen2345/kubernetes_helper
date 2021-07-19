@@ -1,0 +1,19 @@
+# This is the configuration used to check the rubocop source code.
+
+AllCops:
+  Exclude:
+    - 'bin/**/*'
+    - 'spec/**/*'
+    - 'spec/spec_helper.rb'
+    - 'Gemfile'
+    - 'buddy_translatable.gemspec'
+    - 'exe/kubernetes_helper'
+
+Style/BlockComments:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
+
+Style/RescueStandardError:
+  EnforcedStyle: implicit
