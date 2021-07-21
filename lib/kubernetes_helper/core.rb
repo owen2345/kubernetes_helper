@@ -2,9 +2,16 @@
 
 require 'yaml'
 require 'json'
+require 'erb'
 # require 'byebug' rescue nil
 
 module KubernetesHelper
+  class ErbBinding < OpenStruct
+    def get_binding
+      binding
+    end
+  end
+
   class Core
     # @return [Hash]
     attr_accessor :config_values
@@ -26,9 +33,12 @@ module KubernetesHelper
     # @param text (String)
     # Sample: replicas: '#{deployment.replicas}'
     def replace_config_variables(text)
-      text.gsub(/(\#{([^}])*})/) do |code|
-        find_setting_value(code.gsub('#{', '').gsub('}', ''))
+      values = config_values.map do |key, value|
+        [key, value.is_a?(Hash) ? OpenStruct.new(value) : value]
       end
+      bind = ErbBinding.new(values.to_h).get_binding
+      template = ERB.new(text)
+      template.result(bind)
     end
 
     def run_command(command)
@@ -36,9 +46,9 @@ module KubernetesHelper
       KubernetesHelper.run_cmd(command)
     end
 
-    def run_cd_script(script_path)
+    def run_script(script_path)
       content = replace_config_variables(File.read(script_path))
-      tmp_file = KubernetesHelper.settings_path('tmp_cd.sh')
+      tmp_file = KubernetesHelper.settings_path('tmp_script.sh')
       File.write(tmp_file, content)
       KubernetesHelper.run_cmd("chmod +x #{tmp_file}")
       KubernetesHelper.run_cmd(tmp_file)
@@ -60,22 +70,22 @@ module KubernetesHelper
       end
     end
 
-    # @param setting_key (String)
-    # sample: deployment.replicas
-    def find_setting_value(setting_key)
-      parent = @config_values
-      setting_key.split('.').each do |key|
-        parent = parent[key.to_sym]
+    def static_env_vars
+      (config_values.dig(:deployment, :env_vars) || {}).map do |key, value|
+        {
+          'name' => key,
+          'value' => value
+        }
       end
-      parent
     end
 
     # parse secrets auto importer
     def parse_import_secrets(document)
       containers = document.dig('spec', 'template', 'spec', 'containers') || []
       containers.each do |container|
+        container['env'] = (container['env'] || []) + static_env_vars
         if container['import_secrets']
-          container['env'] = (container['env'] || []) + import_secrets(*container['import_secrets'])
+          container['env'] = container['env'] + import_secrets(*container['import_secrets'])
           container.delete('import_secrets')
         end
       end

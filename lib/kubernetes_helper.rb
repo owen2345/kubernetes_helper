@@ -22,7 +22,12 @@ module KubernetesHelper
 
   def self.settings_path(file_name = nil)
     path = File.join(Dir.pwd, FOLDER_NAME)
-    path = File.join(path, file_name) if file_name
+    if file_name
+      templates_path = File.join(File.expand_path(File.dirname(__FILE__)), '../templates')
+      app_path = File.join(path, file_name)
+      template_path = File.join(templates_path, file_name)
+      path = File.exist?(app_path) ? app_path : template_path
+    end
     path
   end
 

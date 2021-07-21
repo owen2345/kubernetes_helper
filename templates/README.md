@@ -17,13 +17,7 @@
   
 - Verify or update k8s settings in kubernetes/settings.rb
     
-- Create the public ip address
-    ```bash
-    DEPLOY_ENV=beta kubernetes_helper run_command "gcloud compute addresses create #{ingress.ip_name} --global"
-    # gcloud compute addresses list # to list static ips generated 
-    ```
-    
-- Register env vars (values must be encrypted using base64) 
+- Register manually env vars (values must be encrypted using base64) 
     Open and register secret values in `kubernetes/secrets.yml`     
     Note: Enter base64 encoded values
     ```bash
@@ -31,34 +25,34 @@
     # kubectl get secrets # to list all secrets registered
     ```
     
+- Register shared cloudsql proxy configuration (only if not exists)
+    ```bash
+    DEPLOY_ENV=beta kubernetes_helper run_command "kubectl create secret generic <%=deployment.cloud_secret_name%> --from-file=credentials.json=<path-to-downloaded/credentials.json>"
+    ```
+
+- Create deployment (match Dockerfile exposed port with containerPort, register env vars from secrets.yml, indicate the correct container image)
+    ```bash
+    DEPLOY_ENV=beta kubernetes_helper run_yml 'deployment.yml' 'kubectl create'
+    # kubectl get deployment # to list deployments
+    ```
+
 - Create service to connect pods and ingress
     ```bash
     DEPLOY_ENV=beta kubernetes_helper run_yml 'service.yml' 'kubectl create'
     # kubectl get services # to list all registered services
     ```
-    
-- Register shared cloudsql proxy configuration (only if not exists)
+
+- Create the public ip address (only if static ip is required)
     ```bash
-    DEPLOY_ENV=beta kubernetes_helper run_command "kubectl create secret generic #{deployment.cloud_secret_name} --from-file=credentials.json=<path-to-downloaded/credentials.json>"
+    DEPLOY_ENV=beta kubernetes_helper run_command "gcloud compute addresses create <%=ingress.ip_name%> --global"
+    # gcloud compute addresses list # to list static ips generated 
     ```
-    
-- Register the ssl certificates (Using lets encrypt)
-    ```bash
-    DEPLOY_ENV=beta kubernetes_helper run_yml 'certificate.yml' 'kubectl create'
-    # kubectl get ManagedCertificate # to list all certificates
-  ```
-  Note: Wildcard domains are not supported
-    
-- Create ingress to register hosts, certificates and connect with service
+  
+- Register ingress to register hosts, certificates and connect with service
     ```bash
     DEPLOY_ENV=beta kubernetes_helper run_yml 'ingress.yml' 'kubectl create'
     # kubectl get ingress # to list all registered ingresses
-    ```
-    
-- Create deployment (match Dockerfile exposed port with containerPort, register env vars from secrets.yml, indicate the correct container image)
-    ```bash
-    DEPLOY_ENV=beta kubernetes_helper run_yml 'deployment.yml' 'kubectl create'
-    # kubectl get deployment # to list deployments
+    # kubectl get ManagedCertificate # to list all certificates
     ```
 
 ## Apply any k8s setting changes

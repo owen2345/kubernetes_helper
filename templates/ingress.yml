@@ -1,16 +1,33 @@
+<% if certificate.domain_name %>
+apiVersion: networking.gke.io/v1beta1
+kind: ManagedCertificate
+metadata:
+  name: '<%=ingress.certificate_name%>'
+spec:
+  domains:
+    - '<%=ingress.domain_name%>'
+<% end %>
+
+---
+
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: '#{ingress.name}'
+  name: '<%=ingress.name%>'
   annotations:
     kubernetes.io/ingress.class: "gce"
-    kubernetes.io/ingress.global-static-ip-name: "#{ingress.ip_name}"
     kubernetes.io/ingress.allow-http: "true"
     ingress.kubernetes.io/ssl-redirect: "true"
 
-    networking.gke.io/managed-certificates: '#{certificate.name}'
+    <% if ingress.ip_name %>
+    kubernetes.io/ingress.global-static-ip-name: "<%=ingress.ip_name%>"
+    <% end %>
+
+    <% if ingress.domain_name %>
+    networking.gke.io/managed-certificates: '<%=ingress.certificate_name%>'
+    <% end %>
 
 spec:
   backend:
-    serviceName: '#{service.name}'
-    servicePort: '#{service.port_name}'
+    serviceName: '<%=service.name%>'
+    servicePort: '<%=service.port_name%>'

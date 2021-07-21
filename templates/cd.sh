@@ -3,11 +3,11 @@ set -e
 
 # expected ENV VAR "KB_AUTH_TOKEN"
 
-DEPLOYMENTS="#{continuous_deployment.deployments}"
-IMAGE_NAME="#{continuous_deployment.image_name}"
-CLUSTER_NAME="#{continuous_deployment.cluster_name}"
-PROJECT_NAME="#{continuous_deployment.project_name}"
-CLUSTER_REGION="#{continuous_deployment.cluster_region}"
+DEPLOYMENTS="<%=continuous_deployment.deployments%>"
+IMAGE_NAME="<%=continuous_deployment.image_name%>"
+CLUSTER_NAME="<%=continuous_deployment.cluster_name%>"
+PROJECT_NAME="<%=continuous_deployment.project_name%>"
+CLUSTER_REGION="<%=continuous_deployment.cluster_region%>"
 
 CI_COMMIT_SHA=$(git rev-parse --verify HEAD)
 DEPLOY_NAME="${IMAGE_NAME}:${CI_COMMIT_SHA}"

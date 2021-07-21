@@ -3,7 +3,7 @@
 require 'spec_helper'
 RSpec.describe KubernetesHelper::Core do
   let(:settings) { { sample: { value1: 'sample value1' } } }
-  let(:sample_yml) { custom_sample_yml rescue 'name: "#{sample.value1}"' }
+  let(:sample_yml) { custom_sample_yml rescue 'name: "<%= sample.value1 %>"' }
   let(:mock_file) { double('File', write: true) }
   let(:inst) { described_class.new('beta') }
 
@@ -32,6 +32,10 @@ RSpec.describe KubernetesHelper::Core do
 
     it 'saves parsed yml to provided path' do
       allow(File).to receive(:open).with(output_yml)
+    end
+
+    it 'auto includes static env vars' do
+      pending '....'
     end
 
     describe 'when replacing secrets as env values' do
@@ -69,16 +73,16 @@ spec:
   describe 'when running command' do
     it 'replaces config value' do
       expect(KubernetesHelper).to receive(:run_cmd).with('echo sample value1')
-      inst.run_command('echo #{sample.value1}')
+      inst.run_command('echo <%= sample.value1 %>')
     end
   end
 
   describe 'when executing bash file' do
     it 'replaces config value' do
       script_path = KubernetesHelper.settings_path('cd.sh')
-      allow(File).to receive(:read).with(script_path).and_return('echo #{sample.value1}')
-      expect(File).to receive(:write).with(/tmp_cd.sh$/, 'echo sample value1')
-      inst.run_cd_script(script_path)
+      allow(File).to receive(:read).with(script_path).and_return('echo <%= sample.value1 %>')
+      expect(File).to receive(:write).with(/tmp_script.sh$/, 'echo sample value1')
+      inst.run_script(script_path)
     end
   end
 end

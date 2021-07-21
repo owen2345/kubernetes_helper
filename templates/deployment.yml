@@ -2,9 +2,9 @@ documents:
   - apiVersion: apps/v1
     kind: Deployment
     metadata:
-      name: &app_name #{deployment.name}
-    spec:
-      replicas: #{deployment.replicas}
+      name: &app_name <%=deployment.name%>
+    spec: &default_spec
+      replicas: <%=deployment.replicas%>
       selector:
         matchLabels:
           name: *app_name
@@ -18,47 +18,45 @@ documents:
         metadata:
           labels:
             name: *app_name
-        spec:
+        spec: &template_spec
           containers:
-            - image: '#{continuous_deployment.image_name}:latest'
+            - &app_container
+              image: '<%=continuous_deployment.image_name%>:latest'
               name: *app_name
-              import_secrets: ['secrets.yml', '#{secrets.name}']
-              env:
-                - name: RAILS_ENV
-                  value: '#{deployment.rails_env}'
+              import_secrets: ['secrets.yml', '<%=secrets.name%>']
               ports:
                 - containerPort: &port 3000
-                  name: '#{service.backend_port_name}'
-              livenessProbe:
+                  name: '<%=service.backend_port_name%>'
+
+              <% if deployment.liveness_path %>
+              livenessProbe: &liveness_probe
                 httpGet:
-                  path: /health_check
+                  path: <%=deployment.liveness_path%>
                   port: *port
                 initialDelaySeconds: 50
                 timeoutSeconds: 3
                 periodSeconds: 15
-              readinessProbe:
-                httpGet:
-                  path: /read_health_check
-                  port: *port
-                initialDelaySeconds: 50
-                timeoutSeconds: 5
-                periodSeconds: 60
+              readinessProbe: *liveness_probe
+              <% end %>
+
               volumeMounts:
                 - &log_volume
                   name: applog
                   mountPath: /app/log
 
-            - image: gcr.io/cloudsql-docker/gce-proxy:1.09 # Cloud sql proxy
+            - &cloudsql_container
+              image: gcr.io/cloudsql-docker/gce-proxy:1.09 # Cloud sql proxy
               name: cloudsql-proxy
               command: ["/cloud_sql_proxy", "--dir=/cloudsql",
-                        "-instances=#{deployment.cloud_sql_instance}=tcp:5432",
+                        "-instances=<%=deployment.cloud_sql_instance%>",
                         "-credential_file=/secrets/cloudsql/credentials.json"]
               volumeMounts:
                 - name: cloudsql-creds
                   mountPath: /secrets/cloudsql
                   readOnly: true
 
-            - name: print-logs # print to stdout all log files
+            - &logs_container # print to stdout all log files
+              name: print-logs
               image: busybox
               command: [/bin/sh, -c, 'until find log/*.log; do sleep 1; done; tail -n+1 -f log/*.log']
               volumeMounts:
@@ -67,6 +65,45 @@ documents:
           volumes:
             - name: cloudsql-creds
               secret:
-                secretName: '#{deployment.cloud_secret_name}'
+                secretName: '<%=deployment.cloud_secret_name%>'
             - name: applog
               emptyDir: {}
+
+  <% if deployment.job_name %>
+  - apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      name: &job_app_name <%=deployment.job_name%>
+    spec:
+      <<: *default_spec
+      replicas: 1
+      selector:
+        matchLabels:
+          name: *job_app_name
+      template:
+        metadata:
+          labels:
+            name: *job_app_name
+        spec:
+          <<: *template_spec
+          containers:
+            - <<: *app_container
+              name: *job_app_name
+              command: "/bin/bash -c <%= deployment.job_command %>"
+              ports: []
+
+              <%= deployment.job_services.any? %>
+              livenessProbe: &liveness_probe
+                exec:
+                  command: [ /bin/sh, -c,
+                    'if [ $(ps -ef | grep "<%= deployment.job_services.join("\|") %>" | grep -v "grep" | wc -l) -lt <%= deployment.job_services.count %> ]; then
+                      echo "Some required services are not running"; exit 1;
+                    fi' ]
+                initialDelaySeconds: 120
+                periodSeconds: 30
+              readinessProbe: *liveness_probe
+              <% end %>
+
+            - *cloudsql_container
+            - <<: *logs_container
+  <% end %>

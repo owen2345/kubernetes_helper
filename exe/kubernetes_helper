@@ -12,7 +12,7 @@ when 'run_command'
 #   Sample: DEPLOY_ENV=beta rake kubernetes_helper:run_deployment "cd_gcloud.sh"
 when 'run_deployment'
   script_path = KubernetesHelper.settings_path(ARGV[1])
-  KubernetesHelper::Core.new(ENV['DEPLOY_ENV']).run_cd_script(script_path)
+  KubernetesHelper::Core.new(ENV['DEPLOY_ENV']).run_script(script_path)
 # Parses kubernetes yml files (supporting multiple documents, Config variables replacement, include secrets).
 #   Sample: DEPLOY_ENV=beta rake kubernetes_helper:run_deployment "deployment.yml" "kubectl create"
 when 'run_yml'
