@@ -9,6 +9,7 @@ settings = {
     cloud_secret_name: "#{is_beta ? 'beta' : 'production'}-cloud-secret",
     cloud_sql_instance: 'xxx:xxx:xxx=tcp:5432', # 5432 => postgres, 3306 => mysql
     env_vars: {}, # Sample: { 'CUSTOM_VAR' => 'value' }
+    # command: '', # custom container command (default empty to be managed by Dockerfile)
     # liveness_path: '/check_liveness', # nil if not exist
     # job_name: "#{app_name}-job", # enable if there is any background service
     # job_command: 'bundle exec sidekiq -C config/sidekiq.yml',

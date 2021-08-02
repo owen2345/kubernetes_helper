@@ -22,6 +22,9 @@ documents:
           containers:
             - &app_container
               image: '<%=continuous_deployment.image_name%>:latest'
+              <% if continuous_deployment.command %>
+              command: ["/bin/bash", "-c", "<%= continuous_deployment.command %>"]
+              <% end %>
               name: *app_name
               import_secrets: ['secrets.yml', '<%=secrets.name%>']
               ports:
