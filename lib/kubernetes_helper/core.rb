@@ -27,7 +27,7 @@ module KubernetesHelper
 
     def parse_yml_file(file_path, output_path)
       parsed_content = replace_config_variables(File.read(file_path))
-      File.open(file_path, 'w+') { |f| f << parsed_content } # save as draft to be reviewed if failed
+      File.open(output_path, 'w+') { |f| f << parsed_content } # save as draft to be reviewed if failed
       old_yaml = YAML.load_stream(parsed_content)
       json_data = old_yaml.to_json # fix to skip anchors
       yml_data = JSON.parse(json_data)
