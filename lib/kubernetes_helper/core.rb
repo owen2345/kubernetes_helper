@@ -72,7 +72,7 @@ module KubernetesHelper
     def static_env_vars
       (config_values.dig(:deployment, :env_vars) || {}).map do |key, value|
         {
-          'name' => key,
+          'name' => key.to_s,
           'value' => value
         }
       end

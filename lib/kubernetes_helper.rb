@@ -20,7 +20,7 @@ module KubernetesHelper
     settings
   end
 
-  def self.settings_path(file_name = nil, use_template: true)
+  def self.settings_path(file_name = nil, use_template: false)
     path = File.join(Dir.pwd, FOLDER_NAME)
     if file_name
       app_path = File.join(path, file_name)
@@ -45,7 +45,7 @@ module KubernetesHelper
     files = %w[README.md secrets.yml settings.rb]
     files += %w[deployment.yml cd.sh ingress.yml service.yml] if mode == 'advanced'
     files.each do |name|
-      path = settings_path(name, use_template: false)
+      path = settings_path(name)
       FileUtils.cp(templates_path(name), path) unless File.exist?(path)
     end
   end
