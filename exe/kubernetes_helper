@@ -9,12 +9,12 @@ case ARGV[0]
 when 'run_command'
   KubernetesHelper::Core.new(ENV['DEPLOY_ENV']).run_command(ARGV[1])
 # Run the deployment script.
-#   Sample: DEPLOY_ENV=beta rake kubernetes_helper:run_deployment "cd_gcloud.sh"
+#   Sample: DEPLOY_ENV=beta kubernetes_helper run_deployment "cd_gcloud.sh"
 when 'run_deployment'
   script_path = KubernetesHelper.settings_path(ARGV[1])
   KubernetesHelper::Core.new(ENV['DEPLOY_ENV']).run_script(script_path)
 # Parses kubernetes yml files (supporting multiple documents, Config variables replacement, include secrets).
-#   Sample: DEPLOY_ENV=beta rake kubernetes_helper:run_deployment "deployment.yml" "kubectl create"
+#   Sample: DEPLOY_ENV=beta kubernetes_helper run_deployment "deployment.yml" "kubectl create"
 when 'run_yml'
   output_path = KubernetesHelper.settings_path('tmp_result.yml')
   KubernetesHelper::Core
@@ -22,11 +22,11 @@ when 'run_yml'
     .parse_yml_file(KubernetesHelper.settings_path(ARGV[1]), output_path)
   KubernetesHelper.run_cmd("#{ARGV[2]} -f #{output_path}")
 # Generate template files
-when 'generate'
-# TODO: ...
-# Verify yml files for possible errors.
-#  Sample: DEPLOY_ENV=beta rake kubernetes_helper:verify_yml_files
+when 'generate' #  Sample: kubernetes_helper generate basic
+  mode = ARGV[1] || 'basic'
+  KubernetesHelper.copy_templates(mode)
 when 'verify_yml'
+# Verify yml files for possible errors.
 # TODO: ...
 else
   puts 'Invalid command'

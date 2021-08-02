@@ -20,13 +20,11 @@ module KubernetesHelper
     settings[env_name.to_sym]
   end
 
-  def self.settings_path(file_name = nil)
+  def self.settings_path(file_name = nil, use_template: true)
     path = File.join(Dir.pwd, FOLDER_NAME)
     if file_name
-      templates_path = File.join(File.expand_path(File.dirname(__FILE__)), '../templates')
       app_path = File.join(path, file_name)
-      template_path = File.join(templates_path, file_name)
-      path = File.exist?(app_path) ? app_path : template_path
+      path = use_template && !File.exist?(app_path) ? templates_path(file_name) : app_path
     end
     path
   end
@@ -34,5 +32,21 @@ module KubernetesHelper
   def self.run_cmd(cmd, title = nil)
     res = Kernel.system cmd
     Kernel.abort("::::::::CD: failed running command: #{title || cmd} ==> #{caller}") if res != true
+  end
+
+  def self.templates_path(file_name = nil)
+    path = File.join(File.expand_path(__dir__), '../templates')
+    file_name ? File.join(path, file_name) : path
+  end
+
+  # @param mode (basic, advanced)
+  def self.copy_templates(mode)
+    FileUtils.mkdir(settings_path) unless Dir.exist?(settings_path)
+    files = %w[README.md secrets.yml settings.rb]
+    files += %w[deployment.yml cd.sh ingress.yml service.yml] if mode == 'advanced'
+    files.each do |name|
+      path = settings_path(name, use_template: false)
+      FileUtils.cp(templates_path(name), path) unless File.exist?(path)
+    end
   end
 end
