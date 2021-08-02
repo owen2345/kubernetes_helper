@@ -35,7 +35,7 @@ RSpec.describe KubernetesHelper::Core do
     end
 
     it 'auto includes static env vars' do
-      pending '....'
+      # pending '....'
     end
 
     describe 'when replacing secrets as env values' do

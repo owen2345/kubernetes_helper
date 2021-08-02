@@ -4,12 +4,12 @@ set -e
 
 SCRIPT_DIR=`dirname "$(realpath -s "$0")"`
 
-DEPLOYMENTS="<%=continuous_deployment.deployments%>"
+DEPLOYMENTS="<%=[deployment.name, deployment.job_name].join(',')%>"
 IMAGE_NAME="<%=continuous_deployment.image_name%>"
 CLUSTER_NAME="<%=continuous_deployment.cluster_name%>"
 PROJECT_NAME="<%=continuous_deployment.project_name%>"
 CLUSTER_REGION="<%=continuous_deployment.cluster_region%>"
-DOCKER_BUILD_CMD="<%=continuous_deployment.docker_build_cmd || 'build -f \"$SCRIPT_DIR/../Dockerfile\"'%>"
+DOCKER_BUILD_CMD="<%=continuous_deployment.docker_build_cmd%>"
 
 CI_COMMIT_SHA=$(git rev-parse --verify HEAD)
 DEPLOY_NAME="${IMAGE_NAME}:${CI_COMMIT_SHA}"
@@ -37,15 +37,10 @@ docker push $DEPLOY_NAME
 docker push $LATEST_NAME
 
 ## Apply deployments
-counter=0
 IFS=',' read -r -a deployments <<< "$DEPLOYMENTS"
 for deployment in "${deployments[@]}"; do
-  echo "::::::::CD: Deploying $deployment"
+  [ -z "$deployment" ] && continue # if empty value
+
   kubectl set image deployment/$deployment $deployment=$DEPLOY_NAME
-  if [[ $counter -eq 0 ]]; then
-    echo "::::::::CD: waiting for possible migrations in $deployment"
-    kubectl rollout status deployment/$deployment
-  fi
-  counter=$((counter+1))
+  [ "$deployment" = "${deployments[0]}" ] && kubectl rollout status deployment/$deployment
 done
-echo "::::::::CD: Deployment finished"

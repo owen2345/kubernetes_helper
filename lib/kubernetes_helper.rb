@@ -14,10 +14,10 @@ module KubernetesHelper
 
   # @param env_name (String)
   # @return [Hash]
-  def self.load_settings(env_name)
+  def self.load_settings
     config_file = File.join(settings_path, 'settings.rb')
     load config_file
-    settings[env_name.to_sym]
+    settings
   end
 
   def self.settings_path(file_name = nil, use_template: true)

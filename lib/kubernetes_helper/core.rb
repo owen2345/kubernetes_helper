@@ -7,7 +7,7 @@ require 'erb'
 
 module KubernetesHelper
   class ErbBinding < OpenStruct
-    def get_binding
+    def get_binding # rubocop:disable Naming/AccessorMethodName:
       binding
     end
   end
@@ -16,10 +16,9 @@ module KubernetesHelper
     # @return [Hash]
     attr_accessor :config_values
 
-    # @param env_name (String)
-    def initialize(env_name)
-      env_name = env_name.to_s.length > 1 ? env_name : 'beta'
-      @config_values = KubernetesHelper.load_settings(env_name)
+    # @param _env_name (String)
+    def initialize(_env_name)
+      @config_values = KubernetesHelper.load_settings
     end
 
     def parse_yml_file(file_path, output_path)
