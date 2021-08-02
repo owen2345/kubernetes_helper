@@ -83,5 +83,14 @@
   ```bash
     env:
       KB_AUTH_TOKEN: secrets.BETA_CLOUD_TOKEN
-    run: DEPLOY_ENV=beta kubernetes_helper run_DEPLOYMENT 'cd_gcloud.sh'
-  ```  
+    run: DEPLOY_ENV=beta kubernetes_helper run_deployment 'cd.sh'
+  ``` 
+  
+* Sample:
+  ```yml
+  - name: Staging deployment
+    env: # Env variable saved in github that contains gcloud credential (json format)
+      KB_AUTH_TOKEN: ${{ secrets.BETA_GOOGLE_AUTH }}
+    run: DEPLOY_ENV=beta kubernetes_helper run_deployment 'cd.sh'
+    if: ${{ !contains(fromJson('["main", "master"]'), env.DEPLOY_BRANCH) }}
+  ```   
