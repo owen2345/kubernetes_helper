@@ -13,7 +13,7 @@ RSpec.configure do |config|
   end
 
   config.before(:each) do
-    path = File.join(__dir__, '../templates')
+    path = File.join(__dir__, '../lib/templates')
     allow(KubernetesHelper).to receive(:settings_path) do |name = nil|
       name ? File.join(path, name) : path
     end
