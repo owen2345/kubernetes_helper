@@ -4,7 +4,7 @@ require 'spec_helper'
 RSpec.describe KubernetesHelper::Core do
   let(:settings) { { sample: { value1: 'sample value1' } } }
   let(:sample_yml) { custom_sample_yml rescue 'name: "<%= sample.value1 %>"' }
-  let(:mock_file) { double('File', write: true) }
+  let(:mock_file) { double('File', write: true, '<<' => true) }
   let(:inst) { described_class.new('beta') }
 
   before do
