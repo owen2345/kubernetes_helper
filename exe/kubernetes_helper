@@ -22,7 +22,7 @@ when 'run_yml'
     .parse_yml_file(KubernetesHelper.settings_path(ARGV[1]), output_path)
   KubernetesHelper.run_cmd("#{ARGV[2]} -f #{output_path}")
 # Generate template files
-when 'generate' #  Sample: kubernetes_helper generate basic
+when 'generate_templates' #  Sample: kubernetes_helper generate basic
   mode = ARGV[1] || 'basic'
   KubernetesHelper.copy_templates(mode)
 when 'verify_yml'
