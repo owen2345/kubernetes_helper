@@ -8,7 +8,7 @@ AllCops:
     - 'Gemfile'
     - 'buddy_translatable.gemspec'
     - 'exe/kubernetes_helper'
-    - 'templates/**/*'
+    - 'lib/templates/**/*'
 
 Style/BlockComments:
   Enabled: false
