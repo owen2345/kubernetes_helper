@@ -92,7 +92,7 @@ documents:
               command: "/bin/bash -c <%= deployment.job_command %>"
               ports: []
 
-              <%= deployment.job_services.any? %>
+              <% if (deployment.job_services || []).any? %>
               livenessProbe: &liveness_probe
                 exec:
                   command: [ /bin/sh, -c,
