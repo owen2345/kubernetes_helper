@@ -34,6 +34,7 @@ TODO: Write usage instructions here
     - Tasks
 - Rake verify files
 - Add one_step_configuration.sh
+- Fix if/end_if for blocks
 - Add sample background job deployment with:
 ```bash
   command: [/bin/sh, -c,

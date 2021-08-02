@@ -1,4 +1,4 @@
-<% if certificate.domain_name %>
+<% if ingress.domain_name %>
 apiVersion: networking.gke.io/v1beta1
 kind: ManagedCertificate
 metadata:
