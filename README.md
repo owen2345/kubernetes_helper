@@ -31,6 +31,7 @@ Or install it yourself as:
 - Rake verify files
 - Add one_step_configuration.sh
 - Fix if/end_if for blocks
+- Ability to copy specific template
 
 ## Contributing
 

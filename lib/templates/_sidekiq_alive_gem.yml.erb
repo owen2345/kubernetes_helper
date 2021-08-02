@@ -1,18 +1,18 @@
-            ports:
-              - containerPort: &sidekiq_alive_port 7433
-            livenessProbe: &sidekiq_liveness
-              httpGet:
-                path: /
-                port: *sidekiq_alive_port
-              initialDelaySeconds: 80 # app specific. Time your sidekiq takes to start processing.
-              timeoutSeconds: 5 # can be much less
-            readinessProbe: *sidekiq_liveness
-            lifecycle:
-              preStop:
-                exec:
-                  # SIGTERM triggers a quick exit; gracefully terminate instead
-                  command: [
-                      "/bin/bash",
-                      "-c",
-                      "SIDEKIQ_PID=$(ps aux | grep sidekiq | grep busy | awk '{ print $2 }') && kill -SIGTERM $SIDEKIQ_PID",
-                  ]
+              ports:
+                - containerPort: &sidekiq_alive_port 7433
+              livenessProbe: &sidekiq_liveness
+                httpGet:
+                  path: /
+                  port: *sidekiq_alive_port
+                initialDelaySeconds: 80 # app specific. Time your sidekiq takes to start processing.
+                timeoutSeconds: 5 # can be much less
+              readinessProbe: *sidekiq_liveness
+              lifecycle:
+                preStop:
+                  exec:
+                    # SIGTERM triggers a quick exit; gracefully terminate instead
+                    command: [
+                        "/bin/bash",
+                        "-c",
+                        "SIDEKIQ_PID=$(ps aux | grep sidekiq | grep busy | awk '{ print $2 }') && kill -SIGTERM $SIDEKIQ_PID",
+                    ]

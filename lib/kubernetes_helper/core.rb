@@ -77,7 +77,7 @@ module KubernetesHelper
 
     def render_template(template_name)
       path = KubernetesHelper.settings_path(template_name, use_template: true)
-      text = "\n #{File.read(path)}"
+      text = "\n#{File.read(path)}"
       replace_config_variables(text)
     end
 
