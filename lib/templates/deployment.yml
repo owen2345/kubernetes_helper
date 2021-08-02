@@ -92,7 +92,9 @@ documents:
           containers:
             - <<: *app_container
               name: *job_app_name
-              command: "/bin/bash -c <%= deployment.job_command %>"
+              <% if continuous_deployment.job_command %>
+              command: [ "/bin/bash", "-c", "<%= continuous_deployment.job_command %>" ]
+              <% end %>
 
             <% if deployment.job_sidekiq_alive_gem %>
               <%= include_template "_sidekiq_alive_gem.yml.erb" %>
