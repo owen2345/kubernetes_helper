@@ -22,11 +22,6 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
-
-## Development
-
-
 ## TODO
 - Documentation
     - Include conditional blocks
@@ -35,14 +30,6 @@ TODO: Write usage instructions here
 - Rake verify files
 - Add one_step_configuration.sh
 - Fix if/end_if for blocks
-- Add sample background job deployment with:
-```bash
-  command: [/bin/sh, -c,
-            'if [ $(ps -ef | grep "pub_sub_model_sync\|delayed_job" | grep -v "grep" | wc -l) -lt 2 ]; then
-              echo "Some required services are not running"; 
-              exit 1;
-            fi']
-```
 
 ## Contributing
 

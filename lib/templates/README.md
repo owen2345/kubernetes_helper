@@ -56,6 +56,7 @@
     # kubectl get ManagedCertificate # to list all certificates
     # Domain and ssl propagation can take more than 10 minutes
     # You can start accessing to the app using the generated ip address
+    # `kubectl get ManagedCertificate` # to see the status of ssl provisionning
     ```
 
 ## Apply any k8s setting changes
