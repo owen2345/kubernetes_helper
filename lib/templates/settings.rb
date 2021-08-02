@@ -6,7 +6,7 @@ settings = {
   deployment: {
     name: app_name,
     replicas: is_beta ? 1 : 2,
-    cloud_secret_name: "#{app_name}-cloud-secret",
+    cloud_secret_name: "#{is_beta ? 'beta' : 'production'}-cloud-secret",
     cloud_sql_instance: 'xxx:xxx:xxx=tcp:5432', # 5432 => postgres, 3306 => mysql
     env_vars: {}, # Sample: { 'CUSTOM_VAR' => 'value' }
     # liveness_path: '/check_liveness', # nil if not exist
