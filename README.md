@@ -29,9 +29,19 @@ TODO: Write usage instructions here
 
 ## TODO
 - Documentation
-- Tests
-- Rake generate
+    - Include conditional blocks
+    - Include hardcoded env values
+    - Tasks
 - Rake verify files
+- Add one_step_configuration.sh
+- Add sample background job deployment with:
+```bash
+  command: [/bin/sh, -c,
+            'if [ $(ps -ef | grep "pub_sub_model_sync\|delayed_job" | grep -v "grep" | wc -l) -lt 2 ]; then
+              echo "Some required services are not running"; 
+              exit 1;
+            fi']
+```
 
 ## Contributing
 

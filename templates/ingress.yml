@@ -4,7 +4,7 @@ kind: ManagedCertificate
 metadata:
   name: '<%=ingress.certificate_name%>'
 spec:
-  domains:
+  domains: # does not support for willcard domains
     - '<%=ingress.domain_name%>'
 <% end %>
 
