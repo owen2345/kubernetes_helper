@@ -92,8 +92,8 @@ documents:
           containers:
             - <<: *app_container
               name: *job_app_name
-              <% if continuous_deployment.job_command %>
-              command: [ "/bin/bash", "-c", "<%= continuous_deployment.job_command %>" ]
+              <% if deployment.job_command %>
+              command: [ "/bin/bash", "-c", "<%= deployment.job_command %>" ]
               <% end %>
 
             <% if deployment.job_sidekiq_alive_gem %>
