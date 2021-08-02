@@ -27,6 +27,7 @@ Or install it yourself as:
     - Include conditional blocks
     - Include hardcoded env values
     - Tasks
+    - Add docs to include partials using `include_template 'sample.yml.erb'`
 - Rake verify files
 - Add one_step_configuration.sh
 - Fix if/end_if for blocks

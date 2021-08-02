@@ -10,6 +10,10 @@ module KubernetesHelper
     def get_binding # rubocop:disable Naming/AccessorMethodName:
       binding
     end
+
+    def include_template(name)
+      render_template.call(name)
+    end
   end
 
   class Core
@@ -23,6 +27,7 @@ module KubernetesHelper
 
     def parse_yml_file(file_path, output_path)
       parsed_content = replace_config_variables(File.read(file_path))
+      File.open(file_path, 'w+') { |f| f << parsed_content } # save as draft to be reviewed if failed
       old_yaml = YAML.load_stream(parsed_content)
       json_data = old_yaml.to_json # fix to skip anchors
       yml_data = JSON.parse(json_data)
@@ -32,10 +37,11 @@ module KubernetesHelper
     # @param text (String)
     # Sample: replicas: '#{deployment.replicas}'
     def replace_config_variables(text)
-      values = config_values.map do |key, value|
+      values = config_values.map do |key, value| # rubocop:disable Style/HashTransformValues
         [key, value.is_a?(Hash) ? OpenStruct.new(value) : value]
-      end
-      bind = ErbBinding.new(values.to_h).get_binding
+      end.to_h
+      values[:render_template] = method(:render_template)
+      bind = ErbBinding.new(values).get_binding
       template = ERB.new(text)
       template.result(bind)
     end
@@ -67,6 +73,12 @@ module KubernetesHelper
           'valueFrom' => { 'secretKeyRef' => { 'name' => secrets_name, 'key' => secret } }
         }
       end
+    end
+
+    def render_template(template_name)
+      path = KubernetesHelper.settings_path(template_name, use_template: true)
+      text = "\n #{File.read(path)}"
+      replace_config_variables(text)
     end
 
     def static_env_vars
