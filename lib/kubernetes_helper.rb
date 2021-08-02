@@ -35,7 +35,7 @@ module KubernetesHelper
   end
 
   def self.templates_path(file_name = nil)
-    path = File.join(File.expand_path(__dir__), '../templates')
+    path = File.join(File.expand_path(__dir__), 'templates')
     file_name ? File.join(path, file_name) : path
   end
 
