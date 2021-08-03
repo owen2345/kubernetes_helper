@@ -88,6 +88,7 @@
   
 * Sample:
   ```yml
+  - run: sudo gem install kubernetes_helper
   - name: Staging deployment
     env: # Env variable saved in github that contains gcloud credential (json format)
       KB_AUTH_TOKEN: ${{ secrets.BETA_GOOGLE_AUTH }}

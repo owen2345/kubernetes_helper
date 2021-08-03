@@ -57,7 +57,7 @@ module KubernetesHelper
       File.write(tmp_file, content)
       KubernetesHelper.run_cmd("chmod +x #{tmp_file}")
       KubernetesHelper.run_cmd(tmp_file)
-      File.delete(tmp_file)
+      # File.delete(tmp_file) # keep tmp script for analysis purpose
     end
 
     private

@@ -2,14 +2,15 @@
 set -e
 # expected ENV VAR "KB_AUTH_TOKEN"
 
-SCRIPT_DIR=`dirname "$(realpath -s "$0")"`
+SCRIPT_DIR=`dirname "$(realpath -s "$0")"` # app_dir/.kubernetes/
+cd "$SCRIPT_DIR/../" # project directory
 
 DEPLOYMENTS="<%=[deployment.name, deployment.job_name].join(',')%>"
 IMAGE_NAME="<%=continuous_deployment.image_name%>"
 CLUSTER_NAME="<%=continuous_deployment.cluster_name%>"
 PROJECT_NAME="<%=continuous_deployment.project_name%>"
 CLUSTER_REGION="<%=continuous_deployment.cluster_region%>"
-DOCKER_BUILD_CMD="<%=continuous_deployment.docker_build_cmd%>"
+DOCKER_BUILD_CMD="<%=continuous_deployment.docker_build_cmd || 'build -f Dockerfile'%>"
 
 CI_COMMIT_SHA=$(git rev-parse --verify HEAD)
 DEPLOY_NAME="${IMAGE_NAME}:${CI_COMMIT_SHA}"

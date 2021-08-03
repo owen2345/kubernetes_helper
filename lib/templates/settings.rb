@@ -25,7 +25,8 @@ settings = {
     image_name: "gcr.io/my-account/#{app_name}",
     project_name: 'my-project-name',
     cluster_name: 'my-cluster-name',
-    cluster_region: 'europe-west4-a'
+    cluster_region: 'europe-west4-a',
+    docker_build_cmd: 'build -f Dockerfile'
   },
   secrets: {
     name: "#{app_name}-secrets"
