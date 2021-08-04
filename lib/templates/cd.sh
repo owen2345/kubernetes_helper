@@ -5,7 +5,7 @@ set -e
 SCRIPT_DIR=`dirname "$(realpath -s "$0")"` # app_dir/.kubernetes/
 cd "$SCRIPT_DIR/../" # project directory
 
-DEPLOYMENTS="<%=[deployment.name, deployment.job_name].join(',')%>"
+DEPLOYMENTS="<%=[deployment.job_name, deployment.name].join(',')%>"
 IMAGE_NAME="<%=continuous_deployment.image_name%>"
 CLUSTER_NAME="<%=continuous_deployment.cluster_name%>"
 PROJECT_NAME="<%=continuous_deployment.project_name%>"
