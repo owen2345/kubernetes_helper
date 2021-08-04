@@ -5,17 +5,17 @@ documents:
       name: &app_name <%=deployment.name%>
     spec: &default_spec
       <% if deployment.replicas.is_a?(Array) %>
-        minReplicas: <%= deployment.replicas[0] %>
-        maxReplicas: <%= deployment.replicas[1] %>
-        metrics:
-          - type: Resource
-            resource:
-              name: "<%= deployment.replicas_cpu_metric ? 'cpu' : 'memory' %>"
-              target:
-                type: Utilization
-                averageUtilization: "<%= deployment.replicas_cpu_metric || deployment.replicas_memory_metric || '50' %>"
+      minReplicas: <%= deployment.replicas[0] %>
+      maxReplicas: <%= deployment.replicas[1] %>
+      metrics:
+        - type: Resource
+          resource:
+            name: "<%= deployment.replicas_cpu_metric ? 'cpu' : 'memory' %>"
+            target:
+              type: Utilization
+              averageUtilization: "<%= deployment.replicas_cpu_metric || deployment.replicas_memory_metric || '50' %>"
       <% else %>
-        replicas: <%=deployment.replicas%>
+      replicas: <%=deployment.replicas%>
       <% end %>
       selector:
         matchLabels:
