@@ -16,6 +16,8 @@ CI_COMMIT_SHA=$(git rev-parse --verify HEAD)
 DEPLOY_NAME="${IMAGE_NAME}:${CI_COMMIT_SHA}"
 LATEST_NAME="${IMAGE_NAME}:latest"
 AUTH_PATH="$SCRIPT_DIR/k8s-auth-token.json"
+
+rm -f -- $AUTH_PATH
 echo $KB_AUTH_TOKEN >> $AUTH_PATH
 
 ## ***** GOOGLE CONNECTOR
