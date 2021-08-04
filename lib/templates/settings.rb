@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
-is_beta = ENV['DEPLOY_ENV'] == 'beta'
-app_name = is_beta ? 'my_beta_app' : 'my_app'
+is_production = ENV['DEPLOY_ENV'] == 'production'
+app_name = is_production ? 'my_app' : 'my_beta_app'
 settings = {
   deployment: {
     name: app_name,
-    replicas: is_beta ? 1 : 2,
-    cloud_secret_name: "#{is_beta ? 'beta' : 'production'}-cloud-secret",
+    replicas: is_production ? 2 : 1,
+    cloud_secret_name: "#{is_production ? 'production' : 'beta'}-cloud-secret",
     cloud_sql_instance: 'xxx:xxx:xxx=tcp:5432', # 5432 => postgres, 3306 => mysql
     env_vars: {}, # Sample: { 'CUSTOM_VAR' => 'value' }
     # command: '', # custom container command (default empty to be managed by Dockerfile)
@@ -19,7 +19,7 @@ settings = {
     name: "#{app_name}-ingress",
     ip_name: "#{app_name}-static-ip", # nil if static ip is not necessary
     certificate_name: "#{app_name}-lets-encrypt", # nil if ssl is not required
-    domain_name: is_beta ? 'beta.myapp.com' : 'myapp.com' # nil if domain is not required
+    domain_name: is_production ? 'myapp.com' : 'beta.myapp.com' # nil if domain is not required
   },
   continuous_deployment: {
     image_name: "gcr.io/my-account/#{app_name}",
