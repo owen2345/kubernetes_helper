@@ -46,11 +46,15 @@ documents:
                 - &log_volume
                   name: applog
                   mountPath: /app/log
+
+                <% if deployment.cloud_secret_name %>
                 - &cloud_credentials_volume
                   name: gcloud-creds
                   mountPath: /secrets/gcloud
                   readOnly: true
+                <% end %>
 
+            <% if deployment.cloud_secret_name %>
             - &cloudsql_container
               image: gcr.io/cloudsql-docker/gce-proxy:1.09 # Cloud sql proxy
               name: cloudsql-proxy
@@ -59,6 +63,7 @@ documents:
                         "-credential_file=/secrets/gcloud/credentials.json"]
               volumeMounts:
                 - *cloud_credentials_volume
+            <% end %>
 
             - &logs_container # print to stdout all log files
               name: print-logs
@@ -69,9 +74,12 @@ documents:
 
           terminationGracePeriodSeconds: 120
           volumes:
+            <% if deployment.cloud_secret_name %>
             - name: gcloud-creds
               secret:
                 secretName: '<%=deployment.cloud_secret_name%>'
+            <% end %>
+
             - name: applog
               emptyDir: {}
 
