@@ -12,7 +12,8 @@ PROJECT_NAME="<%=continuous_deployment.project_name%>"
 CLUSTER_REGION="<%=continuous_deployment.cluster_region%>"
 DOCKER_BUILD_CMD="<%=continuous_deployment.docker_build_cmd || 'build -f Dockerfile'%>"
 
-CI_COMMIT_SHA=$(git rev-parse --verify HEAD)
+CI_COMMIT_SHA=$(git rev-parse --verify HEAD || :)
+CI_COMMIT_SHA=${CI_COMMIT_SHA:-$(date +%s) }
 DEPLOY_NAME="${IMAGE_NAME}:${CI_COMMIT_SHA}"
 LATEST_NAME="${IMAGE_NAME}:latest"
 
