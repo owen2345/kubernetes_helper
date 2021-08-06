@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 is_production = ENV['DEPLOY_ENV'] == 'production'
-app_name = is_production ? 'my_app' : 'my_beta_app'
+app_name = is_production ? 'my-app' : 'my-beta-app' # underscore not accepted
 settings = {
   deployment: {
     name: app_name,

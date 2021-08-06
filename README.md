@@ -11,7 +11,10 @@ kubernetes_helper generate_templates
 ```
 Note: Requires ruby 1.7+      
 
-## Usage
+## Deployment
+Once you generated the basic templates, it comes with the corresponding [readme.md](/lib/templates/README.md) which includes all the steps to deploy your application.
+
+## API
 - Run any kubernetes document    
   `DEPLOY_ENV=<env name> kubernetes_helper run_deployment "<document name>" "<bash command>"`    
   Evaluates the kubernetes document with the following details:
@@ -46,10 +49,7 @@ When performing a command or script, the setting variables are replaced based on
 All these setting variable values are configured in `.kubernetes/settings.rb` which defines the values based on `DEPLOY_ENV`.     
 These setting variables use [erb](https://github.com/ruby/erb) template gem to define variable replacement and conditional blocks, and so on.
 Note: Setting variable values are referenced as an object format instead of a hash format for simplicity.
-
-
-## Deployment
-Once you generated the basic templates, it comes with the corresponding [readme.md](/lib/templates/README.md) which includes all the steps to deploy your application.  
+  
 
 ## Sample
 https://owen2345.github.io/kubernetes_helper/
