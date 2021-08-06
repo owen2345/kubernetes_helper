@@ -1,37 +1,59 @@
 # KubernetesHelper
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/kubernetes_helper`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+This gem is a helper to manage easily Kubernetes settings for GCloud (easy customization for other cloud services) where configuring and deploying a new application can be done in a couple of minutes.
+Configuration and customization can be done for multiple environments and at any level which permits to deploy simple and complex applications.
 
 ## Installation
-
-Add this line to your application's Gemfile:
-
-```ruby
-gem 'kubernetes_helper'
+```bash
+cd my_app/
+gem install kubernetes_helper -v '~> 1.0'
+kubernetes_helper generate_templates
 ```
-
-And then execute:
-
-    $ bundle install
-
-Or install it yourself as:
-
-    $ gem install kubernetes_helper
+Note: Requires ruby 1.7+      
 
 ## Usage
+- Run any kubernetes document
+  `DEPLOY_ENV=<env name> kubernetes_helper run_deployment "<document name>" "<bash command>"`    
+  Evaluates the kubernetes document with the following details:
+  - Supports for `- documents` to include multiple documents in a file and share yml variables between them (Sample: `lib/templates/deployment.yml#1`)
+  - Replaces all setting values based on `DEPLOY_ENV`
+  - Supports for secrets auto importer using `import_secrets: ['secrets.yml', '<%=secrets.name%>']` (Sample: `lib/templates/deployment.yml#29`)
+  - Supports for template including by `include_template 'template_name.yml.erb'`
+  Sample: `DEPLOY_ENV=beta kubernetes_helper run_deployment "deployment.yml" "kubectl create"`
+   
+- Run kubernetes commands
+  `DEPLOY_ENV=<env name> rake kubernetes_helper:run_command "<bash or k8s commands>"`       
+  Replaces all setting variables inside command based on `DEPLOY_ENV` and performs it as a normal bash command.         
+  Sample: `DEPLOY_ENV=beta rake kubernetes_helper:run_command "gcloud compute addresses create \#{ingress.ip_name} --global"'`    
+  
+- Run kubernetes bash scripts 
+  `DEPLOY_ENV=<env name> kubernetes_helper run_script "<script name>"`    
+  Performs the script name located inside `.kubernetes` folder or kubernetes_helper template as the second option. 
+  All setting variables inside the script will be replaced based on `DEPLOY_ENV`.      
+  Sample: `DEPLOY_ENV=beta kubernetes_helper run_script "cd.sh"`
+
+- Generate templates
+  `DEPLOY_ENV=<env name> kubernetes_helper generate_templates "<mode_or_template_name>"`     
+  Copy files based on mode (`basic|advanced`) or a specific file from templates. 
+  Sample: `DEPLOY_ENV=beta kubernetes_helper generate_templates "basic"`    
+  Sample: `DEPLOY_ENV=beta kubernetes_helper generate_templates "ingress.yml"`    
+
+When performing a script it looks first for file inside .kubernetes folder, if not exist, 
+it looks for the file inside kubernetes_helper template folder.    
+
+## Templating
+When performing a command or script, the setting variables are replaced based on `DEPLOY_ENV`. 
+All these setting variable values are configured in `.kubernetes/settings.rb` which defines the values based on `DEPLOY_ENV`.
+These setting variables use [erb](https://github.com/ruby/erb) template gem to define variable replacement and conditional blocks, and so on.
+Note: Setting variable values are referenced as an object format instead of a hash format for simplicity.
+
+
+## Deployment
+Once you generated the basic templates, it comes with the corresponding [readme.md](/lib/templates/README.md) which includes all the steps to deploy your application.  
+
 
 ## TODO
-- Documentation
-    - Include conditional blocks
-    - Include hardcoded env values
-    - Tasks
-    - Add docs to include partials using `include_template 'sample.yml.erb'`
-- Rake verify files
 - Add one_step_configuration.sh
-- Fix if/end_if for blocks
-- Ability to copy specific template
 
 ## Contributing
 

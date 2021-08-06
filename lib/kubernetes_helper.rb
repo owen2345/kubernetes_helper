@@ -39,11 +39,14 @@ module KubernetesHelper
     file_name ? File.join(path, file_name) : path
   end
 
-  # @param mode (basic, advanced)
-  def self.copy_templates(mode)
+  # @param mode_or_file (basic, advanced, String) mode name or any specific template name
+  def self.copy_templates(mode_or_file)
     FileUtils.mkdir(settings_path) unless Dir.exist?(settings_path)
+    template_path = templates_path(mode_or_file)
+    return FileUtils.cp(template_path, settings_path(mode_or_file)) if File.exist?(template_path)
+
     files = %w[README.md secrets.yml settings.rb]
-    files += %w[deployment.yml cd.sh ingress.yml service.yml] if mode == 'advanced'
+    files += %w[deployment.yml cd.sh ingress.yml service.yml] if mode_or_file == 'advanced'
     files.each do |name|
       path = settings_path(name)
       FileUtils.cp(templates_path(name), path) unless File.exist?(path)

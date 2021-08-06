@@ -8,6 +8,7 @@
 - Create the cluster (Only if not exist)
     `gcloud container clusters create my-cluster`
     `# gcloud container clusters list --region europe-west4-a # to list clusters`
+    Note: `--preemptible` recommended for non production environments   
   
 - Use the cluster/project as default
     `gcloud container clusters get-credentials my-cluster --zone europe-west4-a`
@@ -15,7 +16,8 @@
 - Install helper for the next commands
   `gem install kubernetes_helper`
   
-- Verify or update k8s settings in .kubernetes/settings.rb
+- Verify or update k8s settings in .kubernetes/settings.rb    
+  Note: Please do not include sensitive values in this file, ENV values are recommended instead.
 
 - Register shared cloudsql proxy configuration (only if not exists)
     ```bash
@@ -24,7 +26,7 @@
     
 - Register manually env vars (values must be encrypted using base64) 
     Open and register secret values in `.kubernetes/secrets.yml`     
-    Note: Enter base64 encoded values
+    Note: Enter base64 encoded values      
     ```bash
     DEPLOY_ENV=beta kubernetes_helper run_yml 'secrets.yml' 'kubectl create'
     # kubectl get secrets # to list all secrets registered

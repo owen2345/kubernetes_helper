@@ -9,8 +9,8 @@ case ARGV[0]
 when 'run_command'
   KubernetesHelper::Core.new(ENV['DEPLOY_ENV']).run_command(ARGV[1])
 # Run the deployment script.
-#   Sample: DEPLOY_ENV=beta kubernetes_helper run_deployment "cd_gcloud.sh"
-when 'run_deployment'
+#   Sample: DEPLOY_ENV=beta kubernetes_helper run_deployment "cd.sh"
+when 'run_deployment', 'run_script'
   script_path = KubernetesHelper.settings_path(ARGV[1], use_template: true)
   KubernetesHelper::Core.new(ENV['DEPLOY_ENV']).run_script(script_path)
 # Parses kubernetes yml files (supporting multiple documents, Config variables replacement, include secrets).
@@ -22,6 +22,7 @@ when 'run_yml'
     .parse_yml_file(KubernetesHelper.settings_path(ARGV[1], use_template: true), output_path)
   KubernetesHelper.run_cmd("#{ARGV[2]} -f #{output_path}")
 # Generate template files
+#   Sample: DEPLOY_ENV=beta kubernetes_helper generate_templates "basic"
 when 'generate_templates' #  Sample: kubernetes_helper generate basic
   mode = ARGV[1] || 'basic'
   KubernetesHelper.copy_templates(mode)
