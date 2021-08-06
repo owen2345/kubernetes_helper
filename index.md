@@ -25,7 +25,7 @@ cd sample_k8s
 ## Prepare application for k8s
 - Add [Dockerfile](docs/Dockerfile) to define app dependencies in a container
 - Add [.dockerignore](docs/.dockerignore) to exclude unnecessary files like node_modules
-- Test container: docker build .
+- Test container: `docker build .`
 - Create project on gcloud: https://console.cloud.google.com
 - Enable kubernetes engine by navigating to: https://console.cloud.google.com/kubernetes/list
 - Install k8s helper: `gem install kubernetes_helper -v '~>1.0'`
