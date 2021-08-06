@@ -124,7 +124,10 @@ documents:
               <% end %>
             <% end %>
 
+            <% if deployment.cloud_secret_name %>
             - *cloudsql_container
+            <% end %>
+
             - <<: *logs_container
   <% end %>
 
