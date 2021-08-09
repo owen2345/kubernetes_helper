@@ -108,7 +108,7 @@ documents:
               <% end %>
 
             <% if deployment.job_sidekiq_alive_gem %>
-              <%= include_template "_sidekiq_alive_gem.yml.erb" %>
+              <%= include_template "_sidekiq_alive_gem.yml" %>
             <% else %>
               ports: [ ]
               <% if (deployment.job_services || []).any? %>
@@ -132,5 +132,5 @@ documents:
   <% end %>
 
   <% if deployment.replicas_range %>
-  <%= include_template "_replicas.yml.erb" %>
+  <%= include_template "_replicas.yml" %>
   <% end %>

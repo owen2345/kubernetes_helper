@@ -1,0 +1,7 @@
+apiVersion: networking.gke.io/v1beta1
+kind: ManagedCertificate
+metadata:
+  name: '<%=ingress.certificate_name%>'
+spec:
+  domains: # does not support for willcard domains
+    - '<%=ingress.domain_name%>'
