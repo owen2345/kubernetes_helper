@@ -61,6 +61,7 @@ documents:
               command: ["/cloud_sql_proxy", "--dir=/cloudsql",
                         "-instances=<%=deployment.cloud_sql_instance%>",
                         "-credential_file=/secrets/gcloud/credentials.json"]
+              env: []
               volumeMounts:
                 - *cloud_credentials_volume
             <% end %>
@@ -68,7 +69,8 @@ documents:
             - &logs_container # print to stdout all log files
               name: print-logs
               image: busybox
-              command: [/bin/sh, -c, 'until find log/*.log; do sleep 1; done; tail -n+1 -f log/*.log']
+              command: [/bin/sh, -c, 'until find /app/log/*.log; do sleep 1; done; tail -n+1 -f /app/log/*.log']
+              env: []
               volumeMounts:
                 - *log_volume
 
