@@ -1,0 +1,14 @@
+resources:
+  <% if param[:request] %>
+  requests:
+    <% param[:request].each do |key, value| %>
+    <%= key %>: <%= value %>
+    <% end %>
+  <% end %>
+
+  <% if param[:limit] %>
+  limits:
+    <% param[:limit].each do |key, value| %>
+    <%= key %>: <%= value %>
+    <% end %>
+  <% end %>

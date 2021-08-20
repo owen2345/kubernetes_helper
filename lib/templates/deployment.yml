@@ -42,6 +42,8 @@ documents:
               readinessProbe: *liveness_probe
               <% end %>
 
+              <= include_template '_container_resources.yml', deployment.resources || {} >
+
               volumeMounts:
                 - &log_volume
                   name: applog
@@ -56,23 +58,11 @@ documents:
 
             <% if deployment.cloud_secret_name %>
             - &cloudsql_container
-              image: gcr.io/cloudsql-docker/gce-proxy:1.09 # Cloud sql proxy
-              name: cloudsql-proxy
-              command: ["/cloud_sql_proxy", "--dir=/cloudsql",
-                        "-instances=<%=deployment.cloud_sql_instance%>",
-                        "-credential_file=/secrets/gcloud/credentials.json"]
-              env: []
-              volumeMounts:
-                - *cloud_credentials_volume
+              <%= include_template '_cloudsql.yml' %>
             <% end %>
 
             - &logs_container # print to stdout all log files
-              name: print-logs
-              image: busybox
-              command: [/bin/sh, -c, 'until find /app/log/*.log; do sleep 1; done; tail -n+1 -f /app/log/*.log']
-              env: []
-              volumeMounts:
-                - *log_volume
+              <%= include_template '_log_printer.yml' %>
 
           terminationGracePeriodSeconds: 120
           volumes:
@@ -108,6 +98,7 @@ documents:
               <% if deployment.job_command %>
               command: [ "/bin/bash", "-c", "<%= deployment.job_command %>" ]
               <% end %>
+              <= include_template '_container_resources.yml', deployment.job_resources || {} >
 
             <% if deployment.job_sidekiq_alive_gem %>
               <%= include_template "_sidekiq_alive_gem.yml" %>

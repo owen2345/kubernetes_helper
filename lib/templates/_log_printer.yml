@@ -1,0 +1,7 @@
+  name: print-logs
+  image: busybox
+  command: [/bin/sh, -c, 'until find /app/log/*.log; do sleep 1; done; tail -n+1 -f /app/log/*.log']
+  env: []
+  <%= include_template '_container_resources.yml', { requests: { cpu: '5m' }, limits: { cpu: '10m' } } %>
+  volumeMounts:
+    - *log_volume
