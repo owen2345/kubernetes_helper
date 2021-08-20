@@ -1,0 +1,8 @@
+              image: gcr.io/cloudsql-docker/gce-proxy:1.09 # Cloud sql proxy
+              name: cloudsql-proxy
+              command: ["/cloud_sql_proxy", "--dir=/cloudsql",
+                        "-instances=<%=deployment.cloud_sql_instance%>",
+                        "-credential_file=/secrets/gcloud/credentials.json"]
+              <%= include_template '_container_resources.yml', { requests: { cpu: '10m' }, limits: { cpu: '200m' } } %>
+              volumeMounts:
+                - *cloud_credentials_volume

@@ -1,0 +1,13 @@
+              resources:
+                <% if param[:requests] %>
+                requests:
+                  <% param[:requests].map do |key, value| %>
+                  <%= key %>: <%= value %>
+                  <% end %>
+                <% end %>
+                <% if param[:limits] %>
+                limits:
+                  <% param[:limits].map do |key, value| %>
+                  <%= key %>: <%= value %>
+                  <% end %>
+                <% end %>

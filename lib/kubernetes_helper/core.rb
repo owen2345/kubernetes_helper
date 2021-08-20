@@ -11,8 +11,8 @@ module KubernetesHelper
       binding
     end
 
-    def include_template(name)
-      render_template.call(name)
+    def include_template(name, arg = nil)
+      render_template.call(name, arg)
     end
   end
 
@@ -36,10 +36,11 @@ module KubernetesHelper
 
     # @param text (String)
     # Sample: replicas: '#{deployment.replicas}'
-    def replace_config_variables(text)
+    def replace_config_variables(text, custom_vars = {})
       values = config_values.map do |key, value| # rubocop:disable Style/HashTransformValues
         [key, value.is_a?(Hash) ? OpenStruct.new(value) : value]
       end.to_h
+      values = values.merge(custom_vars)
       values[:render_template] = method(:render_template)
       bind = ErbBinding.new(values).get_binding
       template = ERB.new(text)
@@ -75,10 +76,10 @@ module KubernetesHelper
       end
     end
 
-    def render_template(template_name)
+    def render_template(template_name, param = nil)
       path = KubernetesHelper.settings_path(template_name, use_template: true)
       text = "\n#{File.read(path)}"
-      replace_config_variables(text)
+      replace_config_variables(text, { param: param })
     end
 
     def static_env_vars
