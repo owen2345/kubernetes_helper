@@ -3,8 +3,6 @@
               command: ["/cloud_sql_proxy", "--dir=/cloudsql",
                         "-instances=<%=deployment.cloud_sql_instance%>",
                         "-credential_file=/secrets/gcloud/credentials.json"]
-              env: []
-              <%= include_template '_container_resources.yml', { requests: { cpu: '50m' }, limits: { cpu: '200m' } } %>
-
+              <%= include_template '_container_resources.yml', { requests: { cpu: '10m' }, limits: { cpu: '200m' } } %>
               volumeMounts:
                 - *cloud_credentials_volume
