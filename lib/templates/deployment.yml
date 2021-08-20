@@ -42,7 +42,7 @@ documents:
               readinessProbe: *liveness_probe
               <% end %>
 
-              <= include_template '_container_resources.yml', deployment.resources || {} >
+              <%= include_template '_container_resources.yml', deployment.resources || {} %>
 
               volumeMounts:
                 - &log_volume
@@ -98,7 +98,7 @@ documents:
               <% if deployment.job_command %>
               command: [ "/bin/bash", "-c", "<%= deployment.job_command %>" ]
               <% end %>
-              <= include_template '_container_resources.yml', deployment.job_resources || {} >
+              <%= include_template '_container_resources.yml', deployment.job_resources || {} %>
 
             <% if deployment.job_sidekiq_alive_gem %>
               <%= include_template "_sidekiq_alive_gem.yml" %>
