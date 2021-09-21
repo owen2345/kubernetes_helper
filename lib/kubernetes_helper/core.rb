@@ -115,6 +115,8 @@ module KubernetesHelper
     def parse_documents(yml_data)
       documents = []
       Array(yml_data).each do |document|
+        next unless document
+
         document['documents'] ? documents.push(*document['documents']) : documents.push(document)
       end
       documents
