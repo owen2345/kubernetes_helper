@@ -20,6 +20,14 @@ module KubernetesHelper
     settings
   end
 
+  def self.default_settings
+    {
+      cloud: {
+        name: 'gcloud'
+      }
+    }
+  end
+
   def self.settings_path(file_name = nil, use_template: false)
     path = File.join(Dir.pwd, FOLDER_NAME)
     if file_name

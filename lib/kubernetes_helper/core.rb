@@ -22,7 +22,7 @@ module KubernetesHelper
 
     # @param _env_name (String)
     def initialize(_env_name)
-      @config_values = KubernetesHelper.load_settings
+      @config_values = KubernetesHelper.default_settings.merge(KubernetesHelper.load_settings)
     end
 
     def parse_yml_file(file_path, output_path)
