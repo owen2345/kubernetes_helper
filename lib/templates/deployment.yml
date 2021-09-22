@@ -54,6 +54,11 @@ documents:
                   readOnly: true
                 <% end %>
 
+                <% (deployment.custom_volumes || {}).each do |name, vol| %>
+                - name: <%= name %>
+                  mountPath: <%= vol[:mount_path] %>
+                <% end %>
+
             <% if deployment.cloud_secret_name %>
             - &cloudsql_container
               image: gcr.io/cloudsql-docker/gce-proxy:1.09 # Cloud sql proxy
@@ -84,6 +89,17 @@ documents:
 
             - name: applog
               emptyDir: {}
+
+            # Custom volumes
+            # { my_volume: { kind: 'hostPath', mount_path: '/', settings: { path: '..', type: 'Directory' } }  }
+            <% (deployment.custom_volumes || {}).each do |name, vol| %>
+            - name: <%= name %>
+              <%= vol[:kind] %>:
+                <% vol[:settings].each do |k, v| %>
+                <%= k %>: <%= v %>
+                <% end %>
+            <% end %>
+
 
   <% if deployment.job_name %>
   - apiVersion: apps/v1

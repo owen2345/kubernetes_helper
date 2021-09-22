@@ -14,6 +14,7 @@ settings = {
     # job_name: "#{app_name}-job", # enable if there is any background service
     # job_command: 'bundle exec sidekiq -C config/sidekiq.yml',
     # job_services: ['sidekiq', 'cron'] # list of linux services needed.
+    # custom_volumes: { my_volume: { kind: 'hostPath', mount_path: '/', settings: { path: '..', type: 'Directory' } }  }
   },
   ingress: {
     name: "#{app_name}-ingress",
@@ -26,7 +27,7 @@ settings = {
     project_name: 'my-project-name',
     cluster_name: 'my-cluster-name',
     cluster_region: 'europe-west4-a',
-    docker_build_cmd: 'build -f Dockerfile'
+    docker_build_cmd: 'build -f Dockerfile' # using target: 'build --target production -f Dockerfile '
   },
   secrets: {
     name: "#{app_name}-secrets"
