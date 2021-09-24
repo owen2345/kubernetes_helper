@@ -48,6 +48,5 @@ IFS=',' read -r -a deployments <<< "$DEPLOYMENTS"
 for deployment in "${deployments[@]}"; do
   [ -z "$deployment" ] && continue # if empty value
 
-  kubectl set image deployment/$deployment $deployment=$DEPLOY_NAME
-  [ "$deployment" = "${deployments[0]}" ] && kubectl rollout status deployment/$deployment || true
+  <%= include_template "_cd_apply_images.sh" %>
 done
