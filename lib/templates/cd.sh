@@ -49,4 +49,8 @@ for deployment in "${deployments[@]}"; do
   [ -z "$deployment" ] && continue # if empty value
 
   <%= include_template "_cd_apply_images.sh" %>
+
+  <% if continuous_deployment.update_deployment %>
+    kubernetes_helper run_yml 'deployment.yml' 'kubectl apply'
+  <% end %>
 done

@@ -27,7 +27,8 @@ settings = {
     project_name: 'my-project-name',
     cluster_name: 'my-cluster-name',
     cluster_region: 'europe-west4-a',
-    docker_build_cmd: 'build -f Dockerfile' # using target: 'build --target production -f Dockerfile '
+    docker_build_cmd: 'build -f Dockerfile', # using target: 'build --target production -f Dockerfile '
+    update_deployment: false # permits to reload secrets and re-generate/update deployment yaml
   },
   secrets: {
     name: "#{app_name}-secrets"
