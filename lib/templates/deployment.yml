@@ -79,6 +79,8 @@ documents:
               volumeMounts:
                 - *log_volume
 
+            <%= include_template "_custom_containers.yml" %>
+
           terminationGracePeriodSeconds: 120
           volumes:
             <% if deployment.cloud_secret_name %>
@@ -147,6 +149,8 @@ documents:
             <% end %>
 
             - <<: *logs_container
+
+            <%= include_template "_custom_containers.yml" %>
   <% end %>
 
   <% if deployment.replicas_range %>
