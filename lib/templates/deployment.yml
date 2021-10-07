@@ -26,6 +26,7 @@ documents:
               command: ["/bin/bash", "-c", "<%= deployment.command %>"]
               <% end %>
               name: *app_name
+              static_env: true
               import_secrets: ['secrets.yml', '<%=secrets.name%>']
               ports:
                 - containerPort: &port 3000

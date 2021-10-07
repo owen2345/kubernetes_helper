@@ -94,7 +94,8 @@ module KubernetesHelper
     def parse_import_secrets(document)
       containers = document.dig('spec', 'template', 'spec', 'containers') || []
       containers.each do |container|
-        container['env'] = (container['env'] || []) + static_env_vars
+        container['env'] = (container['env'] || [])
+        container['env'] = container['env'] + static_env_vars if container.delete('static_env')
         if container['import_secrets']
           container['env'] = container['env'] + import_secrets(*container['import_secrets'])
           container.delete('import_secrets')
