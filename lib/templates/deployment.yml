@@ -79,7 +79,7 @@ documents:
               volumeMounts:
                 - *log_volume
 
-            <%= include_template "_custom_containers.yml" %>
+            <%= include_template "_custom_containers.yml", { pod: 'web' } %>
 
           terminationGracePeriodSeconds: 120
           volumes:
@@ -150,7 +150,7 @@ documents:
 
             - <<: *logs_container
 
-            <%= include_template "_custom_containers.yml" %>
+            <%= include_template "_custom_containers.yml", { pod: 'job' } %>
   <% end %>
 
   <% if deployment.replicas_range %>
