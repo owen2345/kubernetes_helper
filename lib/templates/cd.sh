@@ -43,14 +43,16 @@ docker tag $DEPLOY_NAME $LATEST_NAME
 docker push $DEPLOY_NAME
 docker push $LATEST_NAME
 
+## Update new secrets defined in secrets.yml as ENV vars for deployments
+<% if continuous_deployment.update_deployment %>
+  kubernetes_helper run_yml 'deployment.yml' 'kubectl apply'
+<% end %>
+
 ## Apply deployments
 IFS=',' read -r -a deployments <<< "$DEPLOYMENTS"
 for deployment in "${deployments[@]}"; do
   [ -z "$deployment" ] && continue # if empty value
 
   <%= include_template "_cd_apply_images.sh" %>
-
-  <% if continuous_deployment.update_deployment %>
-    kubernetes_helper run_yml 'deployment.yml' 'kubectl apply'
-  <% end %>
 done
+
