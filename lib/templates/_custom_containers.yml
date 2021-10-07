@@ -1,0 +1,6 @@
+#            <% if locals[:pod] == 'job' %>
+#            - name: sample_name
+#              image: image_name
+#              ports:
+#                - containerPort: 9494
+#            <% end %>
