@@ -91,7 +91,7 @@ module KubernetesHelper
     end
 
     # parse secrets auto importer
-    def parse_import_secrets(document)
+    def parse_import_secrets(document) # rubocop:disable Metrics/AbcSize
       containers = document.dig('spec', 'template', 'spec', 'containers') || []
       containers.each do |container|
         container['env'] = (container['env'] || [])
