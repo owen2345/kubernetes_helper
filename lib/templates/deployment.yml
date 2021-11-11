@@ -42,7 +42,7 @@ documents:
                 periodSeconds: 15
               readinessProbe: *liveness_probe
               <% end %>
-              <%= include_template "_container_extras.yml", { pod: 'web' } %>
+              <%= include_template "_container_extra_settings.yml", { pod: 'web' } %>
 
               volumeMounts:
                 - &log_volume
@@ -71,7 +71,7 @@ documents:
               env: []
               volumeMounts:
                 - *cloud_credentials_volume
-              <%= include_template "_container_extras.yml", { pod: 'cloudsql' } %>
+              <%= include_template "_container_extra_settings.yml", { pod: 'cloudsql' } %>
             <% end %>
 
             - &logs_container # print to stdout all log files
@@ -81,7 +81,7 @@ documents:
               env: []
               volumeMounts:
                 - *log_volume
-              <%= include_template "_container_extras.yml", { pod: 'logs' } %>
+              <%= include_template "_container_extra_settings.yml", { pod: 'logs' } %>
 
             <%= include_template "_custom_containers.yml", { pod: 'web' } %>
 
@@ -130,23 +130,12 @@ documents:
               <% if deployment.job_command %>
               command: [ "/bin/bash", "-c", "<%= deployment.job_command %>" ]
               <% end %>
-              <%= include_template "_app_container_misc.yml", { pod: 'job' } %>
+              <%= include_template "_container_extra_settings.yml", { pod: 'job' } %>
 
             <% if deployment.job_sidekiq_alive_gem %>
               <%= include_template "_sidekiq_alive_gem.yml" %>
             <% else %>
-              ports: [ ]
-              <% if (deployment.job_services || []).any? %>
-              livenessProbe: &liveness_probe
-                exec:
-                  command: [ /bin/sh, -c,
-                      'if [ $(ps -ef | grep "<%= deployment.job_services.join("\|") %>" | grep -v "grep" | wc -l) -lt <%= deployment.job_services.count %> ]; then
-                           echo "Some required services are not running"; exit 1;
-                       fi' ]
-                initialDelaySeconds: 120
-                periodSeconds: 30
-              readinessProbe: *liveness_probe
-              <% end %>
+              <%= include_template "_job_liveness.yml" %>
             <% end %>
 
             <% if deployment.cloud_secret_name %>
