@@ -1,0 +1,5 @@
+#            <% if locals[:pod] == 'job' %>
+#            - name: scraper
+#              image: owencio/easy_scraper
+#              ...
+#            <% end %>

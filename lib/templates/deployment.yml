@@ -42,6 +42,7 @@ documents:
                 periodSeconds: 15
               readinessProbe: *liveness_probe
               <% end %>
+              <%= include_template "_container_extras.yml", { pod: 'web' } %>
 
               volumeMounts:
                 - &log_volume
@@ -70,6 +71,7 @@ documents:
               env: []
               volumeMounts:
                 - *cloud_credentials_volume
+              <%= include_template "_container_extras.yml", { pod: 'cloudsql' } %>
             <% end %>
 
             - &logs_container # print to stdout all log files
@@ -79,6 +81,7 @@ documents:
               env: []
               volumeMounts:
                 - *log_volume
+              <%= include_template "_container_extras.yml", { pod: 'logs' } %>
 
             <%= include_template "_custom_containers.yml", { pod: 'web' } %>
 
@@ -127,6 +130,7 @@ documents:
               <% if deployment.job_command %>
               command: [ "/bin/bash", "-c", "<%= deployment.job_command %>" ]
               <% end %>
+              <%= include_template "_app_container_misc.yml", { pod: 'job' } %>
 
             <% if deployment.job_sidekiq_alive_gem %>
               <%= include_template "_sidekiq_alive_gem.yml" %>
