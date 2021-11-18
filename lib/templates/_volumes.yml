@@ -1,0 +1,20 @@
+            <% if deployment.cloud_secret_name %>
+            - name: gcloud-creds
+              secret:
+                secretName: '<%=deployment.cloud_secret_name%>'
+            <% end %>
+
+            - name: applog
+              emptyDir: {}
+
+            # Custom volumes
+            # { my_volume: { kind: 'hostPath', mount_path: '/', settings: { path: '..', type: 'Directory' } }  }
+            <% (deployment.custom_volumes || {}).each do |name, vol| %>
+            - name: <%= name %>
+              <%= vol[:kind] %>:
+                <% vol[:settings].each do |k, v| %>
+                <%= k %>: <%= v %>
+                <% end %>
+              <% end %>
+
+            <%= include_template "_custom_volumes.yml", { pod: locals[:pod] } %>

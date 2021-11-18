@@ -1,0 +1,3 @@
+#            - name: dshm
+#              emptyDir:
+#                medium: Memory

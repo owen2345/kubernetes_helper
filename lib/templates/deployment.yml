@@ -87,24 +87,7 @@ documents:
 
           terminationGracePeriodSeconds: 120
           volumes:
-            <% if deployment.cloud_secret_name %>
-            - name: gcloud-creds
-              secret:
-                secretName: '<%=deployment.cloud_secret_name%>'
-            <% end %>
-
-            - name: applog
-              emptyDir: {}
-
-            # Custom volumes
-            # { my_volume: { kind: 'hostPath', mount_path: '/', settings: { path: '..', type: 'Directory' } }  }
-            <% (deployment.custom_volumes || {}).each do |name, vol| %>
-            - name: <%= name %>
-              <%= vol[:kind] %>:
-                <% vol[:settings].each do |k, v| %>
-                <%= k %>: <%= v %>
-                <% end %>
-            <% end %>
+            <%= include_template "_volumes.yml", { pod: 'web' } %>
 
 
   <% if deployment.job_name %>
@@ -145,6 +128,9 @@ documents:
             - <<: *logs_container
 
             <%= include_template "_custom_containers.yml", { pod: 'job' } %>
+
+          volumes:
+            <%= include_template "_volumes.yml", { pod: 'job' } %>
   <% end %>
 
   <% if deployment.replicas_range %>
