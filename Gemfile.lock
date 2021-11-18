@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    kubernetes_helper (1.8.0)
+    kubernetes_helper (1.9.0)
       erb
 
 GEM
