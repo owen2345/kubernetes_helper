@@ -6,6 +6,7 @@ settings = {
   deployment: {
     name: app_name,
     replicas: is_production ? 2 : 1,
+    replicas_range: nil, # [min, max] or nil to ignore, sample: is_production ? [1, 2] : nil
     cloud_secret_name: "#{is_production ? 'production' : 'beta'}-cloud-secret",
     cloud_sql_instance: 'xxx:xxx:xxx=tcp:5432', # 5432 => postgres, 3306 => mysql
     env_vars: {}, # Sample: { 'CUSTOM_VAR' => 'value' }
