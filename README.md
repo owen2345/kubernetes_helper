@@ -9,7 +9,15 @@ cd my_app/
 gem install kubernetes_helper -v '~> 1.0'
 kubernetes_helper generate_templates
 ```
-Note: Requires ruby 1.7+      
+Note: Requires ruby 1.7+     
+
+## Configuration
+- Edit `.kubernetes/settings.rb` and enter or replace all settings with the valid ones
+- For special applications where default configurations are not enough, you can do the following: 
+    - Download the corresponding template from [lib/templates](lib/templates)
+    - Put it inside `.kubernetes` folder
+    - Customize based on your needs (You can add or use your custom variables from `settings.rb`)    
+    Note: The local template will be used instead of the default.
 
 ## Deployment
 Once you generated the basic templates, it comes with the corresponding [readme.md](/lib/templates/README.md) which includes all the steps to deploy your application.
@@ -21,7 +29,7 @@ Once you generated the basic templates, it comes with the corresponding [readme.
   - Supports for `- documents` to include multiple documents in a file and share yml variables between them (Sample: `lib/templates/deployment.yml#1`)
   - Replaces all setting values based on `DEPLOY_ENV`
   - Supports for secrets auto importer using `import_secrets: ['secrets.yml', '<%=secrets.name%>']` (Sample: `lib/templates/deployment.yml#29`)
-  - Supports for template including by `include_template 'template_name.yml.erb'`    
+  - Supports for sub templates by `include_template 'template_name.yml.erb', { my_local_var: 10 }`    
   Sample: `DEPLOY_ENV=beta kubernetes_helper run_deployment "deployment.yml" "kubectl create"`
    
 - Run kubernetes commands    
