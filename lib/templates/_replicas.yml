@@ -9,4 +9,4 @@
         name: <%= deployment.name %>
       minReplicas: <%= deployment.replicas_range[0] %>
       maxReplicas: <%= deployment.replicas_range[1] %>
-      targetCPUUtilizationPercentage: 50
+      targetCPUUtilizationPercentage: <%= deployment.replicas_range[2] || 50 %>
