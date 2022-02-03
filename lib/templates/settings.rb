@@ -21,7 +21,7 @@ settings = {
     name: "#{app_name}-ingress",
     ip_name: "#{app_name}-static-ip", # nil if static ip is not necessary
     certificate_name: "#{app_name}-lets-encrypt", # nil if ssl is not required
-    domain_name: is_production ? 'myapp.com' : 'beta.myapp.com' # nil if domain is not required
+    certificate_domain: is_production ? 'myapp.com' : 'beta.myapp.com' # nil if domain is not required
   },
   continuous_deployment: {
     image_name: "gcr.io/my-account/#{app_name}",

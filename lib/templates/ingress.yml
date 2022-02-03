@@ -1,4 +1,4 @@
-<% if ingress.domain_name %>
+<% if ingress.certificate_name %>
 <%= include_template "certificate.yml" %>
 <% end %>
 
@@ -17,7 +17,7 @@ metadata:
     kubernetes.io/ingress.global-static-ip-name: "<%=ingress.ip_name%>"
     <% end %>
 
-    <% if ingress.domain_name %>
+    <% if ingress.certificate_name %>
     networking.gke.io/managed-certificates: '<%=ingress.certificate_name%>'
     <% end %>
 
