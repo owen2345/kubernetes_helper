@@ -15,7 +15,7 @@ DOCKER_BUILD_CMD="<%=continuous_deployment.docker_build_cmd || 'build -f Dockerf
 CI_COMMIT_SHA=$(git rev-parse --verify HEAD || :)
 CI_COMMIT_SHA=${CI_COMMIT_SHA:-$(date +%s) }
 DEPLOY_NAME="${IMAGE_NAME}:${CI_COMMIT_SHA}"
-LATEST_NAME="${IMAGE_NAME}:latest"
+LATEST_NAME="${IMAGE_NAME}:<%= continuous_deployment.image_tag || 'latest' %>"
 
 if [ ! -z "$KB_AUTH_TOKEN" ]
 then
@@ -37,10 +37,14 @@ then
 fi
 
 
-## Build and push containers
-docker $DOCKER_BUILD_CMD -t $DEPLOY_NAME .
+ALREADY_DEPLOYED="$(gcloud container images list-tags --format='get(tags)' $IMAGE_NAME | grep $CI_COMMIT_SHA)"
+if [ -z $ALREADY_DEPLOYED ]
+then
+  ## Build and push containers
+  docker $DOCKER_BUILD_CMD -t $DEPLOY_NAME .
+  docker push $DEPLOY_NAME
+fi
 docker tag $DEPLOY_NAME $LATEST_NAME
-docker push $DEPLOY_NAME
 docker push $LATEST_NAME
 
 ## Update new secrets defined in secrets.yml as ENV vars for deployments
@@ -55,4 +59,3 @@ for deployment in "${deployments[@]}"; do
 
   <%= include_template "_cd_apply_images.sh" %>
 done
-
