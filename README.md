@@ -90,6 +90,8 @@ Below settings are used when configuring the application in the k8s environment
 - `ingress.certificate_name` (Optional): Ssl certificate is not created nor assigned if empty value. Sample: `my-app-lets-encrypt`. Note: requires `certificate_domain` 
 - `ingress.certificate_domain` (Optional): Domain name for the certificate. Sample: `myapp.com`. Note: does not support for willcard domains
 
+- `cloud.name` (String, optional): Cloud service name. Default `gcloud`.  
+
 ### Partials
 - `_container_extra_settings.yml` Partial template to add custom container settings. Receives `pod` as local variable (`web` | `job` | `cloudsql` | `logs`). Sample:
   ```yaml
