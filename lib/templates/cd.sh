@@ -37,7 +37,7 @@ then
 fi
 
 
-ALREADY_DEPLOYED="$(gcloud container images list-tags --format='get(tags)' $IMAGE_NAME | grep $CI_COMMIT_SHA)"
+ALREADY_DEPLOYED="$(gcloud container images list-tags --format='get(tags)' $IMAGE_NAME | grep $CI_COMMIT_SHA || :;)"
 if [ -z $ALREADY_DEPLOYED ]
 then
   ## Build and push containers
