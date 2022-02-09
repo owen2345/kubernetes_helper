@@ -24,7 +24,8 @@ settings = {
     certificate_domain: is_production ? 'myapp.com' : 'beta.myapp.com' # nil if domain is not required
   },
   continuous_deployment: {
-    image: "gcr.io/my-account/#{app_name}:latest",
+    image_name: "gcr.io/my-account/#{app_name}",
+    image_tag: 'latest',
     project_name: 'my-project-name',
     cluster_name: 'my-cluster-name',
     cluster_region: 'europe-west4-a',

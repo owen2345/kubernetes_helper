@@ -54,8 +54,8 @@ it looks for the file inside kubernetes_helper template folder.
 
 ## Settings API
 Below settings are used when running Continuous Deployment
-- `continuous_deployment.image_name` (String, Optional): Partial docker image url where `:latest` will be automatically added. Sample: `gcr.io/my-account/my_app_name`
-- `continuous_deployment.image` (String, Optional, is mandatory if `image_name` is empty): Full docker image url. Sample: `gcr.io/my-account/my_app_name:latest`
+- `continuous_deployment.image_name` (String): Partial docker image url. Sample: `gcr.io/my-account/my_app_name`
+- `continuous_deployment.image_tag` (String, default 'latest'): Image tag to be used for this application
 - `continuous_deployment.project_name`: Cloud project name. Sample: `my-project-name`
 - `continuous_deployment.cluster_name`: Cluster cluster name. Sample: `my-cluster-name`
 - `continuous_deployment.cluster_region`: Cluster region name. Sample: `europe-west4-a`
