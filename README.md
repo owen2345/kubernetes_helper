@@ -71,7 +71,9 @@ Below settings are used when configuring the application in the k8s environment
 - `deployment.env_vars` (Hash, optional): List of static env variables (Note: Not recommended for sensitive values). Sample: `{ 'RAILS_ENV' => 'production' }`
 - `deployment.command` (String, Optional): Bash command to be used for web containers. Sample: `rails s -b 0.0.0.0`
 - `deployment.liveness_path` (String, Optional): Relative path to be used for readiness and liveness checker of the web app. Sample: `/check_liveness`
-- `deployment.custom_volumes` (Hash<name: path>, Optional): Custom volumes to be mounted. Sample: `{ my_volume: { kind: 'hostPath', mount_path: '/', settings: { path: '..', type: 'Directory' } }  }`
+- `deployment.custom_volumes` (Hash<name: path>, Optional): Custom volumes to be mounted. 
+    Sample volume: `{ my_volume: { kind: 'hostPath', mount_path: '/', settings: { path: '..', type: 'Directory' } }  }`    
+    Sample secret: `{ pubsub_secret: { kind: 'secret', mount_path: '/secrets/pubsub', settings: { secretName: 'my_secret_name' } } }`
 
 - `deployment.job_name` (String, optional): Job deployment name (Note: Underscores are not accepted). Sample: `my-app-job`. Note: This deployment is created only if this value is present
 - `deployment.job_command` (String, optional): Bash command to be used for job container. Sample: `bundle exec sidekiq`

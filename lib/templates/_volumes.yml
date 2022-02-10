@@ -8,7 +8,6 @@
               emptyDir: {}
 
             # Custom volumes
-            # { my_volume: { kind: 'hostPath', mount_path: '/', settings: { path: '..', type: 'Directory' } }  }
             <% (deployment.custom_volumes || {}).each do |name, vol| %>
             - name: <%= name %>
               <%= vol[:kind] %>:
