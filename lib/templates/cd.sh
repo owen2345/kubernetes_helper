@@ -41,9 +41,12 @@ ALREADY_DEPLOYED="$(gcloud container images list-tags --format='get(tags)' $IMAG
 if [ -z $ALREADY_DEPLOYED ]
 then
   ## Build and push containers
+  echo "****** image not created yet, building image..."
   docker $DOCKER_BUILD_CMD -t $DEPLOY_NAME .
   docker push $DEPLOY_NAME
 fi
+
+echo "****** tagging image $DEPLOY_NAME as $LATEST_NAME"
 docker tag $DEPLOY_NAME $LATEST_NAME
 docker push $LATEST_NAME
 
