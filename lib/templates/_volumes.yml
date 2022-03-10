@@ -4,8 +4,10 @@
                 secretName: '<%=deployment.cloud_secret_name%>'
             <% end %>
 
+            <% if deployment.log_container %>
             - name: applog
               emptyDir: {}
+            <% end %>
 
             # Custom volumes
             <% (deployment.custom_volumes || {}).each do |name, vol| %>
