@@ -49,8 +49,7 @@ else
 fi
 
 echo "****** tagging image $DEPLOY_NAME as $LATEST_NAME"
-docker tag $DEPLOY_NAME $LATEST_NAME
-docker push $LATEST_NAME
+gcloud container images add-tag --quiet $DEPLOY_NAME $LATEST_NAME
 
 ## Update new secrets defined in secrets.yml as ENV vars for deployments
 <% if continuous_deployment.update_deployment %>
