@@ -44,6 +44,8 @@ then
   echo "****** image not created yet, building image..."
   docker $DOCKER_BUILD_CMD -t $DEPLOY_NAME .
   docker push $DEPLOY_NAME
+else
+  echo "****** image was already created: $ALREADY_DEPLOYED"
 fi
 
 echo "****** tagging image $DEPLOY_NAME as $LATEST_NAME"
