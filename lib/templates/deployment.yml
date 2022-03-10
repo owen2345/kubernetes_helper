@@ -29,7 +29,7 @@ documents:
               static_env: true
               import_secrets: ['secrets.yml', '<%=secrets.name%>']
               ports:
-                - containerPort: &port 3000
+                - containerPort: &port <% deployment.app_port || 3000 %>
                   name: '<%=service.backend_port_name%>'
 
               <% if deployment.liveness_path %>
@@ -45,9 +45,11 @@ documents:
               <%= include_template "_container_extra_settings.yml", { pod: 'web' } %>
 
               volumeMounts:
+                <% if deployment.log_container %>
                 - &log_volume
                   name: applog
                   mountPath: /app/log
+                <% end %>
 
                 <% if deployment.cloud_secret_name %>
                 - &cloud_credentials_volume
@@ -74,6 +76,7 @@ documents:
               <%= include_template "_container_extra_settings.yml", { pod: 'cloudsql' } %>
             <% end %>
 
+            <% if deployment.log_container %>
             - &logs_container # print to stdout all log files
               name: print-logs
               image: busybox
@@ -82,6 +85,7 @@ documents:
               volumeMounts:
                 - *log_volume
               <%= include_template "_container_extra_settings.yml", { pod: 'logs' } %>
+            <% end %>
 
             <%= include_template "_custom_containers.yml", { pod: 'web' } %>
 
@@ -125,7 +129,9 @@ documents:
             - *cloudsql_container
             <% end %>
 
+            <% if deployment.log_container %>
             - <<: *logs_container
+            <% end %>
 
             <%= include_template "_custom_containers.yml", { pod: 'job' } %>
 

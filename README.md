@@ -74,6 +74,8 @@ Below settings are used when configuring the application in the k8s environment
 - `deployment.custom_volumes` (Hash<name: path>, Optional): Custom volumes to be mounted. 
     Sample volume: `{ my_volume: { kind: 'hostPath', mount_path: '/', settings: { path: '..', type: 'Directory' } }  }`    
     Sample secret: `{ pubsub_secret: { kind: 'secret', mount_path: '/secrets/pubsub', settings: { secretName: 'my_secret_name' } } }`
+- `deployment.log_container` (Boolean, default true): Permits to auto include logs container to print all logs from logs/*.log to stdout (required for papertrail using fluentd)
+- `deployment.app_port` (Integer, default 3000): Application port number
 
 - `deployment.job_name` (String, optional): Job deployment name (Note: Underscores are not accepted). Sample: `my-app-job`. Note: This deployment is created only if this value is present
 - `deployment.job_command` (String, optional): Bash command to be used for job container. Sample: `bundle exec sidekiq`
