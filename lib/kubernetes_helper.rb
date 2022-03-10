@@ -14,7 +14,7 @@ module KubernetesHelper
 
   # @param env_name (String)
   # @return [Hash]
-  def self.load_settings
+  def self.load_settings # rubocop:disable Metrics/MethodLength:
     config_file = File.join(settings_path, 'settings.rb')
     load config_file
 
@@ -30,7 +30,7 @@ module KubernetesHelper
   end
 
   def self.deep_merge(hash1, hash2)
-    merger = proc { |_key, v1, v2| v1.kind_of?(Hash) && v2.kind_of?(Hash) ? v1.merge(v2, &merger) : v2 }
+    merger = proc { |_key, v1, v2| v1.is_a?(Hash) && v2.is_a?(Hash) ? v1.merge(v2, &merger) : v2 }
     hash1.merge(hash2, &merger)
   end
 
