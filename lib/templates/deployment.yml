@@ -29,7 +29,7 @@ documents:
               static_env: true
               import_secrets: ['secrets.yml', '<%=secrets.name%>']
               ports:
-                - containerPort: &port <% deployment.app_port || 3000 %>
+                - containerPort: &port <%= deployment.app_port || 3000 %>
                   name: '<%=service.backend_port_name%>'
 
               <% if deployment.liveness_path %>
