@@ -17,15 +17,21 @@ module KubernetesHelper
   def self.load_settings
     config_file = File.join(settings_path, 'settings.rb')
     load config_file
-    settings
-  end
 
-  def self.default_settings
-    {
+    def_settings = {
       cloud: {
         name: 'gcloud'
+      },
+      deployment: {
+        log_container: true
       }
     }
+    deep_merge(def_settings, settings || {})
+  end
+
+  def self.deep_merge(hash1, hash2)
+    merger = proc { |_key, v1, v2| v1.kind_of?(Hash) && v2.kind_of?(Hash) ? v1.merge(v2, &merger) : v2 }
+    hash1.merge(hash2, &merger)
   end
 
   def self.settings_path(file_name = nil, use_template: false)
