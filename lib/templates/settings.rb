@@ -17,6 +17,12 @@ settings = {
     # job_services: ['sidekiq', 'cron'] # list of linux services needed.
     # custom_volumes: { my_volume: { kind: 'hostPath', mount_path: '/', settings: { path: '..', type: 'Directory' } }  }
   },
+  secrets: {
+    name: "#{app_name}-secrets"
+  },
+  service: {
+    name: app_name,
+  },
   ingress: {
     name: "#{app_name}-ingress",
     ip_name: "#{app_name}-static-ip", # nil if static ip is not necessary
@@ -32,12 +38,6 @@ settings = {
     docker_build_cmd: 'build -f Dockerfile', # using target: 'build --target production -f Dockerfile '
     update_deployment: false # permits to reload secrets and re-generate/update deployment yaml
   },
-  secrets: {
-    name: "#{app_name}-secrets"
-  },
-  service: {
-    name: app_name,
-  }
 }
 
 KubernetesHelper.settings(settings)
