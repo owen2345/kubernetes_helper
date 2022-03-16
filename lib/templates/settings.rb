@@ -37,8 +37,6 @@ settings = {
   },
   service: {
     name: app_name,
-    port_name: 'http-port', # max 15 characters
-    backend_port_name: 'b-port' # max 15 characters
   }
 }
 

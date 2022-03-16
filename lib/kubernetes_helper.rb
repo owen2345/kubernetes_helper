@@ -25,7 +25,10 @@ module KubernetesHelper
       deployment: {
         log_container: true
       },
-      service: {},
+      service: {
+        port_name: 'http-port',
+        backend_port_name: 'b-port'
+      },
       secrets: {},
       continuous_deployment: {},
       ingress: {}
