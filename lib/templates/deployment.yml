@@ -30,7 +30,7 @@ documents:
               import_secrets: ['secrets.yml', '<%=secrets.name%>']
               ports:
                 - containerPort: &port <%= deployment.app_port || 3000 %>
-                  name: '<%=service.backend_port_name%>'
+                  name: '<%=service.backend_port_name || 'b-port'%>'
 
               <% if deployment.liveness_path %>
               livenessProbe: &liveness_probe
