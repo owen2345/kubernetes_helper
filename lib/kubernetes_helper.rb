@@ -23,7 +23,8 @@ module KubernetesHelper
         name: 'gcloud'
       },
       deployment: {
-        log_container: true
+        log_container: true,
+        log_folder: '/app/log'
       },
       service: {
         port_name: 'http-port',

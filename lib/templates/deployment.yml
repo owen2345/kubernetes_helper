@@ -48,7 +48,7 @@ documents:
                 <% if deployment.log_container %>
                 - &log_volume
                   name: applog
-                  mountPath: /app/log
+                  mountPath: <%= deployment.log_folder %>
                 <% end %>
 
                 <% if deployment.cloud_secret_name %>
@@ -80,7 +80,7 @@ documents:
             - &logs_container # print to stdout all log files
               name: print-logs
               image: busybox
-              command: [/bin/sh, -c, 'until find /app/log/*.log; do sleep 1; done; tail -n+1 -f /app/log/*.log']
+              command: [/bin/sh, -c, 'until find <%= deployment.log_folder %>/*.log; do sleep 1; done; tail -n+1 -f <%= deployment.log_folder %>/*.log']
               env: []
               volumeMounts:
                 - *log_volume

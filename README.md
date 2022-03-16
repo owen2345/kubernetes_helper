@@ -77,6 +77,7 @@ Below settings are used when configuring the application in the k8s environment
     Sample volume: `{ my_volume: { kind: 'hostPath', mount_path: '/', settings: { path: '..', type: 'Directory' } }  }`    
     Sample secret: `{ pubsub_secret: { kind: 'secret', mount_path: '/secrets/pubsub', settings: { secretName: 'my_secret_name' } } }`
 - `deployment.log_container` (Boolean, default true): Permits to auto include logs container to print all logs from logs/*.log to stdout (required for papertrail using fluentd)
+- `deployment.log_folder` (String, default `/app/log`): Logs to be printed from
 - `deployment.app_port` (Integer, default 3000): Application port number
 
 - `deployment.job_name` (String, optional): Job deployment name (Note: Underscores are not accepted). Sample: `my-app-job`. Note: This deployment is created only if this value is present
