@@ -24,7 +24,11 @@ module KubernetesHelper
       },
       deployment: {
         log_container: true
-      }
+      },
+      service: {},
+      secrets: {},
+      continuous_deployment: {},
+      ingress: {}
     }
     deep_merge(def_settings, settings || {})
   end
