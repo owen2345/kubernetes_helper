@@ -37,13 +37,14 @@ then
 fi
 
 
-<%=continuous_deployment.before_building_image || ''%>
 ALREADY_DEPLOYED="$(gcloud container images list-tags --format='get(tags)' $IMAGE_NAME | grep $CI_COMMIT_SHA || :;)"
 if [ -z $ALREADY_DEPLOYED ]
 then
   ## Build and push containers
   echo "****** image not created yet, building image..."
+  <%=continuous_deployment.before_building_image || ''%>
   docker $DOCKER_BUILD_CMD -t $DEPLOY_NAME .
+  <%=continuous_deployment.after_building_image || ''%>
   docker push $DEPLOY_NAME
 else
   echo "****** image was already created: $ALREADY_DEPLOYED"
