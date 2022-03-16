@@ -61,6 +61,7 @@ Below settings are used when running Continuous Deployment
 - `continuous_deployment.cluster_region`: Cluster region name. Sample: `europe-west4-a`
 - `continuous_deployment.docker_build_cmd`: Docker command to build the corresponding image. Sample: `build --target production -f Dockerfile `
 - `continuous_deployment.update_deployment` (Boolean, default: false): If true permits to re-generate and update the k8s deployment(s) before applying the new version (new docker image) 
+- `continuous_deployment.before_building_image` (String, default: empty): Add the ability to enter commands before building docker image 
 
 Below settings are used when configuring the application in the k8s environment
 - `deployment.name` (String): Web deployment name (Note: Underscores are not accepted). Sample: `my-app`  

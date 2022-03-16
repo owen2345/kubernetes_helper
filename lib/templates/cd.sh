@@ -37,6 +37,7 @@ then
 fi
 
 
+<%=continuous_deployment.before_building_image || ''%>
 ALREADY_DEPLOYED="$(gcloud container images list-tags --format='get(tags)' $IMAGE_NAME | grep $CI_COMMIT_SHA || :;)"
 if [ -z $ALREADY_DEPLOYED ]
 then
