@@ -71,6 +71,10 @@ Below settings are used when configuring the application in the k8s environment
 - `deployment.cloud_secret_name` (String, Optional): K8s credentials name where cloud secrets will be saved (includes permission like DB). Sample: `my-app-cloud-secret`
 - `deployment.cloud_sql_instance` (String, Optional): Cloud sql instance name. Sample: `my-project:europe-west1:my-instance-name=tcp:5432` (5432 => postgres, 3306 => mysql)
 - `deployment.env_vars` (Hash, optional): List of static env variables (Note: Not recommended for sensitive values). Sample: `{ 'RAILS_ENV' => 'production' }`
+- `deployment.external_secrets` (Hash, optional): List of env vars imported from external secret config.    
+  Basic example: `external_secrets: { paper_trail_port: 'common_secrets' }` will import `paper_trail_port` value from `common_secrets` yml as `PAPER_TRAIL_PORT`           
+  Advanced example: `external_secrets: { papertrail_port: { name: 'common_secrets', key: 'paper_trail_port' } }` will import `paper_trail_port` value from `common_secrets` yml as `PAPERTRAIL_PORT`      
+  
 - `deployment.command` (String, Optional): Bash command to be used for web containers. Sample: `rails s -b 0.0.0.0`
 - `deployment.liveness_path` (String, Optional): Relative path to be used for readiness and liveness checker of the web app. Sample: `/check_liveness`
 - `deployment.custom_volumes` (Hash<name: path>, Optional): Custom volumes to be mounted. 

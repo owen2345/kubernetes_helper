@@ -24,7 +24,8 @@ module KubernetesHelper
       },
       deployment: {
         log_container: true,
-        log_folder: '/app/log'
+        log_folder: '/app/log',
+        external_secrets: {}
       },
       service: {
         port_name: 'http-port',
