@@ -9,7 +9,7 @@ RSpec.describe KubernetesHelper::Core do
 
   before do
     allow(KubernetesHelper).to receive(:run_cmd)
-    allow(KubernetesHelper).to receive(:load_settings).and_return(settings)
+    inst.config_values.merge!(settings)
     allow(File).to receive(:open).and_yield(mock_file)
     allow(File).to receive(:delete)
   end
@@ -58,6 +58,27 @@ spec:
 
       it 'replaces secrets' do
         expect(mock_file).to receive(:write).with(/name: #{secret_name}/)
+      end
+
+      describe 'when including external secrets' do
+        it 'parses a simple external secret' do
+          inst.config_values[:deployment][:external_secrets] = { paper_trail_port: 'common_secrets' }
+          allow(mock_file).to receive(:write) do |content|
+            expect(content).to include('name: PAPER_TRAIL_PORT')
+            expect(content).to include('name: common_secrets')
+            expect(content).to include('key: paper_trail_port')
+          end
+        end
+
+        it 'parses a complex external secret' do
+          secrets = { papertrail_port: { name: 'common_secrets', key: 'paper_trail_port' } }
+          inst.config_values[:deployment][:external_secrets] = secrets
+          allow(mock_file).to receive(:write) do |content|
+            expect(content).to include('name: PAPERTRAIL_PORT')
+            expect(content).to include('name: common_secrets')
+            expect(content).to include('key: paper_trail_port')
+          end
+        end
       end
     end
 

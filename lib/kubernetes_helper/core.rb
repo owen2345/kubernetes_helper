@@ -79,10 +79,12 @@ module KubernetesHelper
     def external_secrets
       data = config_values.dig(:deployment, :external_secrets) || {}
       data.map do |key, source|
-        source = source.is_a?(Hash) ? source : { name: source, key: key }
+        source = source.is_a?(Hash) ? source : { name: source.to_s, key: key }
         {
-          'name' => key.upcase,
-          'valueFrom' => { 'secretKeyRef' => { 'name' => source[:name], 'key' => source[:key] } }
+          'name' => key.upcase.to_s,
+          'valueFrom' => {
+            'secretKeyRef' => { 'name' => source[:name], 'key' => source[:key].to_s }
+          }
         }
       end
     end
