@@ -34,10 +34,6 @@ RSpec.describe KubernetesHelper::Core do
       allow(File).to receive(:open).with(output_yml)
     end
 
-    it 'auto includes static env vars' do
-      # pending '....'
-    end
-
     describe 'when replacing secrets as env values' do
       let(:secret_file_name) { 'secrets.yml' }
       let(:secret_name) { 'secret_name' }
@@ -48,6 +44,7 @@ spec:
       spec:
         containers:
           - import_secrets: ['#{secret_file_name}', '#{secret_name}']
+          - static_env: true
         }
       end
       before { allow(File).to receive(:read).with(/#{secret_file_name}$/).and_call_original }
@@ -60,19 +57,18 @@ spec:
         expect(mock_file).to receive(:write).with(/name: #{secret_name}/)
       end
 
-      describe 'when including external secrets' do
-        it 'parses a simple external secret' do
-          inst.config_values[:deployment][:external_secrets] = { paper_trail_port: 'common_secrets' }
+      describe 'when including defined env vars' do
+        it 'includes static env vars' do
+          inst.config_values[:deployment][:env_vars] = { ENV: 'production' }
           allow(mock_file).to receive(:write) do |content|
-            expect(content).to include('name: PAPER_TRAIL_PORT')
-            expect(content).to include('name: common_secrets')
-            expect(content).to include('key: paper_trail_port')
+            expect(content).to include('name: ENV')
+            expect(content).to include('value: production')
           end
         end
 
         it 'parses a complex external secret' do
-          secrets = { papertrail_port: { name: 'common_secrets', key: 'paper_trail_port' } }
-          inst.config_values[:deployment][:external_secrets] = secrets
+          secrets = { PAPERTRAIL_PORT: { name: 'common_secrets', key: 'paper_trail_port' } }
+          inst.config_values[:deployment][:env_vars] = secrets
           allow(mock_file).to receive(:write) do |content|
             expect(content).to include('name: PAPERTRAIL_PORT')
             expect(content).to include('name: common_secrets')

@@ -67,24 +67,10 @@ module KubernetesHelper
     def import_secrets(path, secrets_name)
       path = KubernetesHelper.settings_path(path)
       data = YAML.load(File.read(path)) # rubocop:disable Security/YAMLLoad
-      secrets = data['data'].keys.map do |secret|
+      data['data'].keys.map do |secret|
         {
           'name' => secret.upcase,
           'valueFrom' => { 'secretKeyRef' => { 'name' => secrets_name, 'key' => secret } }
-        }
-      end
-      secrets + external_secrets
-    end
-
-    def external_secrets
-      data = config_values.dig(:deployment, :external_secrets) || {}
-      data.map do |key, source|
-        source = source.is_a?(Hash) ? source : { name: source.to_s, key: key }
-        {
-          'name' => key.upcase.to_s,
-          'valueFrom' => {
-            'secretKeyRef' => { 'name' => source[:name], 'key' => source[:key].to_s }
-          }
         }
       end
     end
@@ -97,9 +83,11 @@ module KubernetesHelper
 
     def static_env_vars
       (config_values.dig(:deployment, :env_vars) || {}).map do |key, value|
+        external = value.is_a?(Hash)
+        value = { 'secretKeyRef' => { 'name' => value[:name], 'key' => value[:key].to_s } } if external
         {
           'name' => key.to_s,
-          'value' => value
+          (external ? 'valueFrom' : 'value') => value
         }
       end
     end
