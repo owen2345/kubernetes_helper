@@ -1,7 +1,6 @@
 # Kubernetes app configuration
 
-## Configure a new application environment
-### Cluster connection
+## Cluster connection
 - Create the project on Gcloud
 - Set the project where to work on     
     `gcloud config set project my-project`
@@ -14,14 +13,14 @@
 - Use the cluster/project as default    
     `gcloud container clusters get-credentials my-cluster --zone europe-west4-a`
   
-### App setup
-- Install helper for the next commands    
+## App setup
+- Install kubernetes-helper (if not installed yet)    
   `gem install kubernetes_helper`  
   
-- Verify or update k8s settings in .kubernetes/settings.rb        
+- Verify or update k8s settings in `.kubernetes/settings.rb`        
   Note: Please do not include sensitive values in this file, secrets are recommended instead.
 
-- Register shared cloudsql proxy configuration (only if not exists)    
+- Register shared cloudsql proxy configuration to connect application to the Database/Pubsub (only if it does not exist yet)    
     ```bash
     DEPLOY_ENV=beta kubernetes_helper run_command "kubectl create secret generic <%=deployment.cloud_secret_name%> --from-file=credentials.json=<path-to-downloaded/credentials.json>"
     ```
@@ -68,7 +67,7 @@
   Note3: If the pod error is `ImagePullBackOff`, it is because the application docker image is missing. 
   You can deploy your application via github actions or similar (see #Configure-continuous-deployment-for-github-actions) or do it manually (see #Deploy-application-manually)
 
-### Deploy application manually
+## Deploy application manually
 Run the deployment manually with:     
 ```bash
   DEPLOY_ENV=beta kubernetes_helper run_deployment 'cd.sh'
@@ -76,7 +75,7 @@ Run the deployment manually with:
 The application image will be create and uploaded to the configured container registry (application pods should be restarted with the new docker image).      
 Visit the application url to see changes.
 
-### Configure continuous deployment for github actions
+## Configure continuous deployment for github actions
 This gem comes with continuous deployment script out of the box which can be executed with a single line of code.
 * Go to github repository settings    
 * Register a new secret variable with content downloaded from (for google cloud) https://console.cloud.google.com/iam-admin/serviceaccounts 
@@ -114,7 +113,7 @@ deployment:
         with:
           key: CD-docker-cache-${{ hashFiles('Dockerfile', 'Gemfile.lock') }}
 
-      ###### App deployment          
+      #### App deployment          
       - run: sudo gem install kubernetes_helper
       - name: App deployment
         env:
@@ -123,7 +122,7 @@ deployment:
         run: kubernetes_helper run_deployment 'cd.sh'
 ```   
   
-### Apply any k8s setting changes
+## Apply any k8s setting changes
 - Secrets    
   Open kubernetes secrets and add/edit/remove values and then save it    
   `kubectl edit secret ...`

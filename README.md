@@ -12,17 +12,17 @@ Configuration and customization can be done for multiple environments and at any
       Note: Requires ruby 1.7+    
 
 2. Generate helper settings
-  ```bash
-    kubernetes_helper generate_templates
-  ```
-  Note: `.kubernetes` folder was added. For special applications where default configurations are not enough, you can do the following: 
-  - Download the required template from [lib/templates](lib/templates)
-  - Put it inside `.kubernetes` folder
-  - Customize based on your needs (You can add or use your custom variables from `settings.rb`)    
-  Note: The local template will be used instead of the default one.
+      ```bash
+        kubernetes_helper generate_templates
+      ```
+      Note: `.kubernetes` folder was added. For special applications where default configurations are not enough, you can do the following: 
+      - Download the required template from [lib/templates](lib/templates)
+      - Put it inside `.kubernetes` folder
+      - Customize based on your needs (You can add or use your custom variables from `settings.rb`)    
+      Note: The local template will be used instead of the default one.
 
 3. Install/setup the application on kubernetes    
-  Open `.kubernetes/README.md` to see the instructions (customize the readme according to your project and keep it updated)
+  Open [.kubernetes/README.md](lib/templates/README.md) to see the instructions (customize the file according to your project and keep it updated)
 
 
 ## API
