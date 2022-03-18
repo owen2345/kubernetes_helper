@@ -11,7 +11,7 @@ Configuration and customization can be done for multiple environments and at any
   ```
   Note: Requires ruby 1.7+    
 
-2. Generate the helper templates to enter app settings
+2. Generate helper settings
   ```bash
     kubernetes_helper generate_templates
   ```
