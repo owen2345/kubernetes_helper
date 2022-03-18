@@ -3,24 +3,27 @@
 This gem is a helper to manage easily Kubernetes settings for GCloud (easy customization for other cloud services) where configuring and deploying a new application can be done in a couple of minutes.
 Configuration and customization can be done for multiple environments and at any level which permits to deploy simple and complex applications.
 
-## Installation
-```bash
-cd my_app/
-gem install kubernetes_helper -v '~> 1.0'
-kubernetes_helper generate_templates
-```
-Note: Requires ruby 1.7+     
+## Steps
+1. Install the `kubernetes_helper` gem
+  ```bash
+  cd my_app/
+  gem install kubernetes_helper -v '~> 1.0'
+  ```
+  Note: Requires ruby 1.7+    
 
-## Configuration
-- Edit `.kubernetes/settings.rb` and enter or replace all settings with the valid ones
-- For special applications where default configurations are not enough, you can do the following: 
-    - Download the corresponding template from [lib/templates](lib/templates)
-    - Put it inside `.kubernetes` folder
-    - Customize based on your needs (You can add or use your custom variables from `settings.rb`)    
-    Note: The local template will be used instead of the default.
+2. Generate the helper templates to enter app settings
+  ```bash
+    kubernetes_helper generate_templates
+  ```
+  Note: `.kubernetes` folder was added. For special applications where default configurations are not enough, you can do the following: 
+  - Download the required template from [lib/templates](lib/templates)
+  - Put it inside `.kubernetes` folder
+  - Customize based on your needs (You can add or use your custom variables from `settings.rb`)    
+  Note: The local template will be used instead of the default one.
 
-## Deployment
-Once you generated the basic templates, it comes with the corresponding [readme.md](/lib/templates/README.md) which includes all the steps to deploy your application.
+3. Install/setup the application on kubernetes    
+  Open `.kubernetes/README.md` to see the instructions (customize the readme according to your project and keep it updated)
+
 
 ## API
 - Run any kubernetes document    

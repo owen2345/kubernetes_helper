@@ -1,6 +1,7 @@
 # Kubernetes app configuration
 
 ## Configure a new application environment
+### Cluster connection
 - Create the project on Gcloud
 - Set the project where to work on     
     `gcloud config set project my-project`
@@ -13,11 +14,12 @@
 - Use the cluster/project as default    
     `gcloud container clusters get-credentials my-cluster --zone europe-west4-a`
   
+### App setup
 - Install helper for the next commands    
-  `gem install kubernetes_helper`
+  `gem install kubernetes_helper`  
   
 - Verify or update k8s settings in .kubernetes/settings.rb        
-  Note: Please do not include sensitive values in this file, ENV values are recommended instead.
+  Note: Please do not include sensitive values in this file, secrets are recommended instead.
 
 - Register shared cloudsql proxy configuration (only if not exists)    
     ```bash
@@ -60,8 +62,68 @@
     # You can start accessing to the app using the generated ip address
     # `kubectl get ManagedCertificate` # to see the status of ssl provisionning
     ```
+- Update your domain to point to the new generated ip address (if required) and visit the domain or the ip address to see your application.     
+  Note: The domain name propagation can take some time before pointing to the new ip address.     
+  Note2: If the application shows "404 not found", check the deployment/pods status by: `kubectl get pods`    
+  Note3: If the pod error is `ImagePullBackOff`, it is because the application docker image is missing. 
+  You can deploy your application via github actions or similar (see #Configure-continuous-deployment-for-github-actions) or do it manually (see #Deploy-application-manually)
 
-## Apply any k8s setting changes
+### Deploy application manually
+Run the deployment manually with:     
+```bash
+  DEPLOY_ENV=beta kubernetes_helper run_deployment 'cd.sh'
+```     
+The application image will be create and uploaded to the configured container registry (application pods should be restarted with the new docker image).      
+Visit the application url to see changes.
+
+### Configure continuous deployment for github actions
+This gem comes with continuous deployment script out of the box which can be executed with a single line of code.
+* Go to github repository settings    
+* Register a new secret variable with content downloaded from (for google cloud) https://console.cloud.google.com/iam-admin/serviceaccounts 
+    (Make sure to attach a "Editor", "Storage Admin" and "Kubernetes engine cluster admin" role to the service account)
+  ```bash
+    BETA_CLOUD_TOKEN=<secret content here>
+    PROD_CLOUD_TOKEN=<secret content here>
+  ```
+  
+* Add github workflow to automatically run deployment when merged into master or staging, something like:    
+```yml
+name: "Continuous Deployment"
+on:
+  push:
+    branches: 
+      - master
+      - staging
+
+deployment:
+  runs-on: ubuntu-latest
+  jobs:
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ env.DEPLOY_BRANCH }}
+      - name: Cancel previous Workflow Actions
+        uses: styfle/cancel-workflow-action@0.6.0
+        with:
+          access_token: ${{ github.token }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@master
+      - uses: satackey/action-docker-layer-caching@v0.0.11
+        continue-on-error: true
+        with:
+          key: CD-docker-cache-${{ hashFiles('Dockerfile', 'Gemfile.lock') }}
+
+      ###### App deployment          
+      - run: sudo gem install kubernetes_helper
+      - name: App deployment
+        env:
+          KB_AUTH_TOKEN: ${{ github.ref_name == 'master' && secrets.PROD_CLOUD_TOKEN || secrets.BETA_CLOUD_TOKEN }}
+          DEPLOY_ENV: ${{ github.ref_name == 'master' && 'production' || 'beta' }}
+        run: kubernetes_helper run_deployment 'cd.sh'
+```   
+  
+### Apply any k8s setting changes
 - Secrets    
   Open kubernetes secrets and add/edit/remove values and then save it    
   `kubectl edit secret ...`
@@ -70,30 +132,4 @@
 - Other settings    
   ```bash
     DEPLOY_ENV=beta kubernetes_helper run_yml 'deployment.yml' 'kubectl apply'
-  ```
-
-## Configure continuous deployment for github actions
-* Go to github repository settings    
-* Register a new secret variable with content downloaded from https://console.cloud.google.com/iam-admin/serviceaccounts 
-    (Make sure to attach a "Editor", "Storage Admin" and "Kubernetes engine cluster admin" role to the service account)
-  ```bash
-    beta: BETA_CLOUD_TOKEN=<secret content here>
-    production: PROD_CLOUD_TOKEN=<secret content here>
-  ```
-  
-* Add action to run deployment:    
-  ```bash
-    env:
-      KB_AUTH_TOKEN: secrets.BETA_CLOUD_TOKEN
-    run: DEPLOY_ENV=beta kubernetes_helper run_deployment 'cd.sh'
-  ``` 
-  
-* Sample:    
-  ```yml
-  - run: sudo gem install kubernetes_helper
-  - name: Staging deployment
-    env: # Env variable saved in github that contains gcloud credential (json format)
-      KB_AUTH_TOKEN: ${{ secrets.BETA_GOOGLE_AUTH }}
-    run: DEPLOY_ENV=beta kubernetes_helper run_deployment 'cd.sh'
-    if: ${{ !contains(fromJson('["main", "master"]'), env.DEPLOY_BRANCH) }}
-  ```   
+  ```  
