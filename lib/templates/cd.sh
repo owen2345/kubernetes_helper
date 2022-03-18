@@ -10,7 +10,6 @@ IMAGE_NAME="<%=continuous_deployment.image_name%>"
 CLUSTER_NAME="<%=continuous_deployment.cluster_name%>"
 PROJECT_NAME="<%=continuous_deployment.project_name%>"
 CLUSTER_REGION="<%=continuous_deployment.cluster_region%>"
-DOCKER_BUILD_CMD="<%=continuous_deployment.docker_build_cmd || 'build -f Dockerfile'%>"
 
 CI_COMMIT_SHA=$(git rev-parse --verify HEAD || :)
 CI_COMMIT_SHA=${CI_COMMIT_SHA:-$(date +%s) }
@@ -42,9 +41,11 @@ if [ -z $ALREADY_DEPLOYED ]
 then
   ## Build and push containers
   echo "****** image not created yet, building image..."
-  <%=continuous_deployment.before_building_image || ''%>
-  docker $DOCKER_BUILD_CMD -t $DEPLOY_NAME .
-  <%=continuous_deployment.after_building_image || ''%>
+  <% if continuous_deployment.docker_cmd %>
+    <%= continuous_deployment.docker_cmd %>
+  <% else %>
+    docker <%=continuous_deployment.docker_build_cmd || 'build -f Dockerfile'%> -t $DEPLOY_NAME .
+  <% end %>
   docker push $DEPLOY_NAME
 else
   echo "****** image was already created: $ALREADY_DEPLOYED"
