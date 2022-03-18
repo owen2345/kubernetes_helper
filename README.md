@@ -5,11 +5,11 @@ Configuration and customization can be done for multiple environments and at any
 
 ## Steps
 1. Install the `kubernetes_helper` gem
-  ```bash
-  cd my_app/
-  gem install kubernetes_helper -v '~> 1.0'
-  ```
-  Note: Requires ruby 1.7+    
+      ```bash
+      cd my_app/
+      gem install kubernetes_helper -v '~> 1.0'
+      ```
+      Note: Requires ruby 1.7+    
 
 2. Generate helper settings
   ```bash
