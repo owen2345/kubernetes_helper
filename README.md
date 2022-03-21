@@ -61,7 +61,7 @@ Configuration and customization can be done for multiple environments and at any
 ### Application ingress.yml (Optional)
 - `ingress.name`: Name of k8s ingress for the app: Sample: `my-app-ingress`
 - `ingress.ip_name` (Optional): Static ip address is not created nor assigned if empty value. Sample: `my-app-static-ip`
-- `ingress.certificate_name` (Optional): Ssl certificate is not created nor assigned if empty value. Sample: `my-app-lets-encrypt`. Note: requires `certificate_domain` 
+- `ingress.certificate_name` (Deprecated): Ssl certificate is not created nor assigned if empty value. Sample: `my-app-lets-encrypt`. Note: requires `certificate_domain` 
 - `ingress.certificate_domain` (Optional): Domain name for the certificate. Sample: `myapp.com`. Note: does not support for willcard domains     
    To register multiple domains (Certificate names will be auto-generated like `mysite-com-lets-encrypt`): `certificate_domain: ['mysite.com', 'mysite.de', 'mysite.uk']`
 
