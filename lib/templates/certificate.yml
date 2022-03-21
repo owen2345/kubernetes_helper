@@ -1,7 +1,12 @@
+# locals: { domains: Hash(domain => cert_name) }
+<% locals[:domains].each do |domain, cert_name| %>
 apiVersion: networking.gke.io/v1beta1
 kind: ManagedCertificate
 metadata:
-  name: '<%=ingress.certificate_name%>'
+  name: '<%= cert_name %>'
 spec:
-  domains: # does not support for willcard domains
-    - '<%= ingress.domain_name || ingress.certificate_domain %>'
+  domains: # does not support for willcard domains nor multiple domains
+    - '<%= domain %>'
+
+---
+<% end %>

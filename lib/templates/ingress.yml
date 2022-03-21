@@ -1,5 +1,9 @@
+<%
+  domains = Array(ingress.domain_name || ingress.certificate_domain)
+  domains = domains.map { |domain| cert_name = "#{domain.downcase.gsub(/[^0-9A-Za-z]/, '-')}-lets-encrypt"; domains.count > 1 ? [domain, cert_name] : [domain, ingress.certificate_name || cert_name] }.to_h
+%>
 <% if ingress.certificate_name %>
-<%= include_template "certificate.yml" %>
+<%= include_template "certificate.yml", { domains: domains } %>
 <% end %>
 
 ---
@@ -18,7 +22,7 @@ metadata:
     <% end %>
 
     <% if ingress.certificate_name %>
-    networking.gke.io/managed-certificates: '<%=ingress.certificate_name%>'
+    networking.gke.io/managed-certificates: '<%= domains.values.join(", ") %>'
     <% end %>
 
 spec:
