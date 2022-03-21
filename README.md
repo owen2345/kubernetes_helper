@@ -26,19 +26,7 @@ Configuration and customization can be done for multiple environments and at any
 
 
 ## Settings API
-Below settings are used when running Continuous Deployment
-- `continuous_deployment.image_name` (String): Partial docker image url. Sample: `gcr.io/my-account/my_app_name`
-- `continuous_deployment.image_tag` (String, default 'latest'): Image tag to be used for this application
-- `continuous_deployment.project_name`: Cloud project name. Sample: `my-project-name`
-- `continuous_deployment.cluster_name`: Cluster cluster name. Sample: `my-cluster-name`
-- `continuous_deployment.cluster_region`: Cluster region name. Sample: `europe-west4-a`
-- `continuous_deployment.docker_build_cmd` (deprecated): Docker command to build the corresponding image. Sample: `build --target production -f Dockerfile `
-- `continuous_deployment.docker_cmd` (String): Docker command to build the corresponding image.      
-  Simple docker image: `docker build -f Dockerfile -t $DEPLOY_NAME .`    
-  Docker image with target: `docker build --target production -f Dockerfile -t $DEPLOY_NAME .`        
-- `continuous_deployment.update_deployment` (Boolean, default: false): If true permits to re-generate and update the k8s deployment(s) before applying the new version (new docker image) 
-
-Below settings are used when configuring the application in the k8s environment
+### Application deployment.yml
 - `deployment.name` (String): Web deployment name (Note: Underscores are not accepted). Sample: `my-app`  
 - `deployment.replicas` (Integer): Quantity of replicas. Sample: `1`
 - `deployment.replicas_range` (Array<min, max, cpu_percentage>, Optional): Defines the minimum and the maximum number of pods that could automatically be created when `CPUUtilizationPercentage` is above than defined. Sample: `[1, 3, 50]`
@@ -47,7 +35,6 @@ Below settings are used when configuring the application in the k8s environment
 - `deployment.env_vars` (Hash, optional): List of static or external env variables (Note: Not recommended for sensitive values).      
    Sample: `{ 'RAILS_ENV' => 'production' }`      
    Example for external secrets: `{ PAPERTRAIL_PORT: { name: 'common_secrets', key: 'paper_trail_port' }` will import `paper_trail_port` value from `common_secrets` yml as `PAPERTRAIL_PORT`
-  
 - `deployment.command` (String, Optional): Bash command to be used for web containers. Sample: `rails s -b 0.0.0.0`
 - `deployment.liveness_path` (String, Optional): Relative path to be used for readiness and liveness checker of the web app. Sample: `/check_liveness`
 - `deployment.custom_volumes` (Hash<name: path>, Optional): Custom volumes to be mounted. 
@@ -57,18 +44,21 @@ Below settings are used when configuring the application in the k8s environment
 - `deployment.log_folder` (String, default `/app/log`): Logs to be printed from
 - `deployment.app_port` (Integer, default 3000): Application port number
 
+### Application deployment.yml for jobs or services without internet interaction (Optional)
 - `deployment.job_name` (String, optional): Job deployment name (Note: Underscores are not accepted). Sample: `my-app-job`. Note: This deployment is created only if this value is present
 - `deployment.job_command` (String, optional): Bash command to be used for job container. Sample: `bundle exec sidekiq`
 - `deployment.job_sidekiq_alive_gem` (Boolean, default false): If true will add liveness checker settings using `sidekiq_alive_gem` (`sidekiq_alive` gem needs to be present in your Gemfile)
 - `deployment.job_services` (Array, Optional, only `job_sidekiq_alive_gem` or `job_services` is allowed): List of linux service names that are required for a healthy job container. Sample: `['sidekiq', 'cron']` 
 
-
+### Applications secrets.yml (Optional)
 - `secrets.name` (String): K8s secrets name where env vars will be saved and fetched from. Sample: `my-app-secrets`
 
+### Application service.yml (Optional)
 - `service.name`: K8s service name. Sample: `my-app-service`
 - `service.port_name` (String, default `http-port`): Http port name to connect between k8s ingress and service. Sample: `http-port`. Note: max 15 characters
 - `service.backend_port_name` (String, default `b-port`): Web backend port name to be connected between k8s service and web deployments. Sample: `b-port`. Note: max 15 characters
 
+### Application ingress.yml (Optional)
 - `ingress.name`: Name of k8s ingress for the app: Sample: `my-app-ingress`
 - `ingress.ip_name` (Optional): Static ip address is not created nor assigned if empty value. Sample: `my-app-static-ip`
 - `ingress.certificate_name` (Optional): Ssl certificate is not created nor assigned if empty value. Sample: `my-app-lets-encrypt`. Note: requires `certificate_domain` 
@@ -76,7 +66,19 @@ Below settings are used when configuring the application in the k8s environment
 
 - `cloud.name` (String, optional): Cloud service name. Default `gcloud`.  
 
-### Partials
+### Application CD (continuous deployment)
+- `continuous_deployment.image_name` (String): Partial docker image url. Sample: `gcr.io/my-account/my_app_name`
+- `continuous_deployment.image_tag` (String, default 'latest'): Image tag to be used for this application
+- `continuous_deployment.project_name`: Cloud project name. Sample: `my-project-name`
+- `continuous_deployment.cluster_name`: Cluster cluster name. Sample: `my-cluster-name`
+- `continuous_deployment.cluster_region`: Cluster region name. Sample: `europe-west4-a`
+- `continuous_deployment.docker_build_cmd` (deprecated): Docker command to build the corresponding image. Sample: `build --target production -f Dockerfile `
+- `continuous_deployment.docker_cmd` (String): Docker command to build the corresponding image.      
+  Simple docker image: `docker build -f Dockerfile -t $DEPLOY_NAME .`    
+  Docker image with target: `docker build --target production -f Dockerfile -t $DEPLOY_NAME .`        
+- `continuous_deployment.update_deployment` (Boolean, default: false): If true permits to re-generate and update the k8s deployment(s) before applying the new version (new docker image)
+
+### Gem templating partials
 - `_container_extra_settings.yml` Partial template to add custom container settings. Receives `pod` as local variable (`web` | `job` | `cloudsql` | `logs`). Sample:
   ```yaml
                <% if locals[:pod] == 'job' %>
@@ -99,7 +101,7 @@ Below settings are used when configuring the application in the k8s environment
 ```
 - `_cd_apply_images.sh` Partial template to customize the process to apply the new version (new docker image)
 
-### Templating
+### Gem templating
 When performing a command or script, the setting variables are replaced based on `DEPLOY_ENV`. 
 All these setting variable values are configured in `.kubernetes/settings.rb` which defines the values based on `DEPLOY_ENV`.     
 These setting variables use [erb](https://github.com/ruby/erb) template gem to define variable replacement and conditional blocks, and so on.
