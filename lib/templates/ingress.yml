@@ -2,7 +2,7 @@
   domains = Array(ingress.domain_name || ingress.certificate_domain)
   domains = domains.map { |domain| cert_name = "#{domain.downcase.gsub(/[^0-9A-Za-z]/, '-')}-lets-encrypt"; domains.count > 1 ? [domain, cert_name] : [domain, ingress.certificate_name || cert_name] }.to_h
 %>
-<% if ingress.certificate_name %>
+<% if ingress.certificate_domain %>
 <%= include_template "certificate.yml", { domains: domains } %>
 <% end %>
 
@@ -21,7 +21,7 @@ metadata:
     kubernetes.io/ingress.global-static-ip-name: "<%=ingress.ip_name%>"
     <% end %>
 
-    <% if ingress.certificate_name %>
+    <% if ingress.certificate_domain %>
     networking.gke.io/managed-certificates: '<%= domains.values.join(", ") %>'
     <% end %>
 
