@@ -25,36 +25,6 @@ Configuration and customization can be done for multiple environments and at any
   Open [.kubernetes/README.md](lib/templates/README.md) to see the instructions (customize the file according to your project and keep it updated)
 
 
-## API
-- Run any kubernetes document    
-  `DEPLOY_ENV=<env name> kubernetes_helper run_deployment "<document name>" "<bash command>"`    
-  Evaluates the kubernetes document with the following details:
-  - Supports for `- documents` to include multiple documents in a file and share yml variables between them (Sample: `lib/templates/deployment.yml#1`)
-  - Replaces all setting values based on `DEPLOY_ENV`
-  - Supports for secrets auto importer using `import_secrets: ['secrets.yml', '<%=secrets.name%>']` (Sample: `lib/templates/deployment.yml#29`)
-  - Supports for sub templates by `include_template 'template_name.yml.erb', { my_local_var: 10 }`    
-  Sample: `DEPLOY_ENV=beta kubernetes_helper run_deployment "deployment.yml" "kubectl create"`
-   
-- Run kubernetes commands    
-  `DEPLOY_ENV=<env name> rake kubernetes_helper:run_command "<bash or k8s commands>"`           
-  Replaces all setting variables inside command based on `DEPLOY_ENV` and performs it as a normal bash command.             
-  Sample: `DEPLOY_ENV=beta rake kubernetes_helper:run_command "gcloud compute addresses create \#{ingress.ip_name} --global"'`    
-  
-- Run kubernetes bash scripts     
-  `DEPLOY_ENV=<env name> kubernetes_helper run_script "<script name>"`    
-  Performs the script name located inside `.kubernetes` folder or kubernetes_helper template as the second option.
-  All setting variables inside the script will be replaced based on `DEPLOY_ENV`.      
-  Sample: `DEPLOY_ENV=beta kubernetes_helper run_script "cd.sh"`
-
-- Generate templates    
-  `DEPLOY_ENV=<env name> kubernetes_helper generate_templates "<mode_or_template_name>"`     
-  Copy files based on mode (`basic|advanced`) or a specific file from templates.     
-  Sample: `DEPLOY_ENV=beta kubernetes_helper generate_templates "basic"`    
-  Sample: `DEPLOY_ENV=beta kubernetes_helper generate_templates "ingress.yml"`    
-
-When performing a script it looks first for file inside .kubernetes folder, if not exist, 
-it looks for the file inside kubernetes_helper template folder.    
-
 ## Settings API
 Below settings are used when running Continuous Deployment
 - `continuous_deployment.image_name` (String): Partial docker image url. Sample: `gcr.io/my-account/my_app_name`
@@ -129,15 +99,46 @@ Below settings are used when configuring the application in the k8s environment
 ```
 - `_cd_apply_images.sh` Partial template to customize the process to apply the new version (new docker image)
 
-## Templating
+### Templating
 When performing a command or script, the setting variables are replaced based on `DEPLOY_ENV`. 
 All these setting variable values are configured in `.kubernetes/settings.rb` which defines the values based on `DEPLOY_ENV`.     
 These setting variables use [erb](https://github.com/ruby/erb) template gem to define variable replacement and conditional blocks, and so on.
 Note: Setting variable values are referenced as an object format instead of a hash format for simplicity.
   
 
-## Sample
+### Sample
 https://owen2345.github.io/kubernetes_helper/
+
+
+## API
+- Run any kubernetes document    
+  `DEPLOY_ENV=<env name> kubernetes_helper run_deployment "<document name>" "<bash command>"`    
+  Evaluates the kubernetes document with the following details:
+  - Supports for `- documents` to include multiple documents in a file and share yml variables between them (Sample: `lib/templates/deployment.yml#1`)
+  - Replaces all setting values based on `DEPLOY_ENV`
+  - Supports for secrets auto importer using `import_secrets: ['secrets.yml', '<%=secrets.name%>']` (Sample: `lib/templates/deployment.yml#29`)
+  - Supports for sub templates by `include_template 'template_name.yml.erb', { my_local_var: 10 }`    
+  Sample: `DEPLOY_ENV=beta kubernetes_helper run_deployment "deployment.yml" "kubectl create"`
+   
+- Run kubernetes commands    
+  `DEPLOY_ENV=<env name> rake kubernetes_helper:run_command "<bash or k8s commands>"`           
+  Replaces all setting variables inside command based on `DEPLOY_ENV` and performs it as a normal bash command.             
+  Sample: `DEPLOY_ENV=beta rake kubernetes_helper:run_command "gcloud compute addresses create \#{ingress.ip_name} --global"'`    
+  
+- Run kubernetes bash scripts     
+  `DEPLOY_ENV=<env name> kubernetes_helper run_script "<script name>"`    
+  Performs the script name located inside `.kubernetes` folder or kubernetes_helper template as the second option.
+  All setting variables inside the script will be replaced based on `DEPLOY_ENV`.      
+  Sample: `DEPLOY_ENV=beta kubernetes_helper run_script "cd.sh"`
+
+- Generate templates    
+  `DEPLOY_ENV=<env name> kubernetes_helper generate_templates "<mode_or_template_name>"`     
+  Copy files based on mode (`basic|advanced`) or a specific file from templates.     
+  Sample: `DEPLOY_ENV=beta kubernetes_helper generate_templates "basic"`    
+  Sample: `DEPLOY_ENV=beta kubernetes_helper generate_templates "ingress.yml"`    
+
+When performing a script it looks first for file inside .kubernetes folder, if not exist, 
+it looks for the file inside kubernetes_helper template folder.
 
 ## TODO
 - Add one_step_configuration.sh
