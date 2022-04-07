@@ -1,0 +1,7 @@
+              resources:
+                limits:
+                  cpu: <%= locals[:cpu][:max] %>
+                  memory: <%= locals[:mem][:max] %>
+                requests:
+                  cpu: <%= locals[:cpu][:min] %>
+                  memory: <%= locals[:mem][:max] %>

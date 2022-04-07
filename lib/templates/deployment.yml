@@ -42,6 +42,9 @@ documents:
                 periodSeconds: 15
               readinessProbe: *liveness_probe
               <% end %>
+              <% if deployment.resources %>
+              <%= include_template "_resources.yml", deployment.resources %>
+              <% end %>
               <%= include_template "_container_extra_settings.yml", { pod: 'web' } %>
 
               volumeMounts:
@@ -73,6 +76,7 @@ documents:
               env: []
               volumeMounts:
                 - *cloud_credentials_volume
+              <%= include_template "_resources.yml", deployment.cloudsql_resources || { cpu: { max: '300m', min: '100m' }, mem: { max: '500Mi', min: '200Mi' } } %>
               <%= include_template "_container_extra_settings.yml", { pod: 'cloudsql' } %>
             <% end %>
 
@@ -84,6 +88,7 @@ documents:
               env: []
               volumeMounts:
                 - *log_volume
+              <%= include_template "_resources.yml", deployment.logs_resources || { cpu: { max: '200m', min: '50m' }, mem: { max: '200Mi', min: '50Mi' } } %>
               <%= include_template "_container_extra_settings.yml", { pod: 'logs' } %>
             <% end %>
 
@@ -116,6 +121,9 @@ documents:
               name: *job_app_name
               <% if deployment.job_command %>
               command: [ "/bin/bash", "-c", "<%= deployment.job_command %>" ]
+              <% end %>
+              <% if deployment.job_resources %>
+              <%= include_template "_resources.yml", deployment.job_resources %>
               <% end %>
               <%= include_template "_container_extra_settings.yml", { pod: 'job' } %>
 

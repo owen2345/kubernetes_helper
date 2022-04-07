@@ -43,12 +43,17 @@ Configuration and customization can be done for multiple environments and at any
 - `deployment.log_container` (Boolean, default true): Permits to auto include logs container to print all logs from logs/*.log to stdout (required for papertrail using fluentd)
 - `deployment.log_folder` (String, default `/app/log`): Logs to be printed from
 - `deployment.app_port` (Integer, default 3000): Application port number
+- `deployment.resources` (Hash, optional): Configure depending on the web app requirements. Sample: `{ cpu: { max: '1', min: '500m' }, mem: { max: '1Gi', min: '500Mi' } }`
+
+- `deployment.cloudsql_resources` (Hash, optional): Configure depending on the app requirements. Default: `{ cpu: { max: '300m', min: '100m' }, mem: { max: '500Mi', min: '200Mi' } }`
+- `deployment.logs_resources` (Hash, optional): Configure depending on the app requirements. Default: `{ cpu: { max: '200m', min: '50m' }, mem: { max: '200Mi', min: '50Mi' } }`
 
 ### Application deployment.yml for jobs or services without internet interaction (Optional)
 - `deployment.job_name` (String, optional): Job deployment name (Note: Underscores are not accepted). Sample: `my-app-job`. Note: This deployment is created only if this value is present
 - `deployment.job_command` (String, optional): Bash command to be used for job container. Sample: `bundle exec sidekiq`
 - `deployment.job_sidekiq_alive_gem` (Boolean, default false): If true will add liveness checker settings using `sidekiq_alive_gem` (`sidekiq_alive` gem needs to be present in your Gemfile)
 - `deployment.job_services` (Array, Optional, only `job_sidekiq_alive_gem` or `job_services` is allowed): List of linux service names that are required for a healthy job container. Sample: `['sidekiq', 'cron']` 
+- `deployment.job_resources` (Hash, optional): Configure depending on the job app requirements. Sample: `{ cpu: { max: '1', min: '500m' }, mem: { max: '1Gi', min: '500Mi' } }`
 
 ### Applications secrets.yml (Optional)
 - `secrets.name` (String): K8s secrets name where env vars will be saved and fetched from. Sample: `my-app-secrets`
