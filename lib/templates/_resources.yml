@@ -4,4 +4,4 @@
                   memory: <%= locals[:mem][:max] %>
                 requests:
                   cpu: <%= locals[:cpu][:min] %>
-                  memory: <%= locals[:mem][:max] %>
+                  memory: <%= locals[:mem][:min] %>
