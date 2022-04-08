@@ -1,7 +1,15 @@
               resources:
                 limits:
+                  <% if locals[:cpu] && locals[:cpu][:max] %>
                   cpu: <%= locals[:cpu][:max] %>
+                  <% end %>
+                  <% if locals[:mem] && locals[:mem][:max] %>
                   memory: <%= locals[:mem][:max] %>
+                  <% end %>
                 requests:
+                  <% if locals[:cpu] && locals[:cpu][:min] %>
                   cpu: <%= locals[:cpu][:min] %>
+                  <% end %>
+                  <% if locals[:mem] && locals[:mem][:min] %>
                   memory: <%= locals[:mem][:min] %>
+                  <% end %>
