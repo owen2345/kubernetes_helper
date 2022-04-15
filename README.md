@@ -62,6 +62,7 @@ Configuration and customization can be done for multiple environments and at any
 - `service.name`: K8s service name. Sample: `my-app-service`
 - `service.port_name` (String, default `http-port`): Http port name to connect between k8s ingress and service. Sample: `http-port`. Note: max 15 characters
 - `service.backend_port_name` (String, default `b-port`): Web backend port name to be connected between k8s service and web deployments. Sample: `b-port`. Note: max 15 characters
+- `service.type`: K8s service type. By default `NodePort`
 
 ### Application ingress.yml (Optional)
 - `ingress.name`: Name of k8s ingress for the app: Sample: `my-app-ingress`
