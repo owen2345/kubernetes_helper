@@ -76,7 +76,7 @@ documents:
               env: []
               volumeMounts:
                 - *cloud_credentials_volume
-              <%= include_template "_resources.yml", deployment.cloudsql_resources || { cpu: { max: '300m', min: '100m' }, mem: { max: '500Mi', min: '200Mi' } } %>
+              <%= include_template "_resources.yml", deployment.cloudsql_resources || { cpu: { min: '1' }, mem: { min: '1Gi' } } %>
               <%= include_template "_container_extra_settings.yml", { pod: 'cloudsql' } %>
             <% end %>
 
@@ -88,7 +88,7 @@ documents:
               env: []
               volumeMounts:
                 - *log_volume
-              <%= include_template "_resources.yml", deployment.logs_resources || { cpu: { max: '200m', min: '50m' }, mem: { max: '200Mi', min: '50Mi' } } %>
+              <%= include_template "_resources.yml", deployment.logs_resources || { cpu: { max: '300m', min: '100m' }, mem: { max: '500Mi', min: '200Mi' } } %>
               <%= include_template "_container_extra_settings.yml", { pod: 'logs' } %>
             <% end %>
 
