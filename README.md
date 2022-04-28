@@ -63,6 +63,8 @@ Configuration and customization can be done for multiple environments and at any
 - `service.port_name` (String, default `http-port`): Http port name to connect between k8s ingress and service. Sample: `http-port`. Note: max 15 characters
 - `service.backend_port_name` (String, default `b-port`): Web backend port name to be connected between k8s service and web deployments. Sample: `b-port`. Note: max 15 characters
 - `service.type`: K8s service type. By default `NodePort`
+- `service.do_certificate_id`: Digital Ocean certificate ID to be used for the loadbalancer to auto redirect http to https.       
+   Note: This value can be fetched via `doctl compute certificate list`. If there are no certificates available, you can generate a new one using digital ocean dashboard -> networking -> certificates.
 
 ### Application ingress.yml (Optional)
 - `ingress.name`: Name of k8s ingress for the app: Sample: `my-app-ingress`
@@ -71,7 +73,7 @@ Configuration and customization can be done for multiple environments and at any
 - `ingress.certificate_domain` (Optional): Domain name for the certificate. Sample: `myapp.com`. Note: does not support for willcard domains     
    To register multiple domains (Certificate names will be auto-generated like `mysite-com-lets-encrypt`): `certificate_domain: ['mysite.com', 'mysite.de', 'mysite.uk']`
 
-- `cloud.name` (String, optional): Cloud service name. Default `gcloud`.  
+- `cloud.name` (String, optional): Cloud service name: `gcloud | digital_ocean`. Default `gcloud`.  
 
 ### Application CD (continuous deployment)
 - `continuous_deployment.image_name` (String): Partial docker image url. Sample: `gcr.io/my-account/my_app_name`
