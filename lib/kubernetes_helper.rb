@@ -25,7 +25,8 @@ module KubernetesHelper
       deployment: {
         log_container: true,
         log_folder: '/app/log',
-        external_secrets: {}
+        external_secrets: {},
+        job_apps: settings[:job_apps] || job_apps_from_old_settings(settings)
       },
       service: {
         port_name: 'http-port',
@@ -74,5 +75,19 @@ module KubernetesHelper
       path = settings_path(name)
       FileUtils.cp(templates_path(name), path) unless File.exist?(path)
     end
+  end
+
+  def self.job_apps_from_old_settings(settings)
+    return [] unless settings[:deployment][:job_name]
+
+    [
+      {
+        name: settings[:deployment][:job_name],
+        command: settings[:deployment][:job_command],
+        services: settings[:deployment][:job_services],
+        resources: settings[:deployment][:job_resources],
+        sidekiq_alive_gem: settings[:deployment][:job_sidekiq_alive_gem]
+      }
+    ]
   end
 end

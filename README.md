@@ -22,7 +22,7 @@ Configuration and customization can be done for multiple environments and at any
       Note: The local template will be used instead of the default one.
 
 3. Install/setup the application on kubernetes    
-  Open [.kubernetes/README.md](lib/templates/README.md) to see the instructions (customize the file according to your project and keep it updated)
+  Open [.kubernetes/README.md](lib/templates/README.md) to see the instructions (customize the file according to your project and keep it updated in your repository)
 
 
 ## Settings API
@@ -49,11 +49,11 @@ Configuration and customization can be done for multiple environments and at any
 - `deployment.logs_resources` (Hash, optional): Configure depending on the app requirements. Default: `{ cpu: { max: '200m', min: '50m' }, mem: { max: '200Mi', min: '50Mi' } }`
 
 ### Application deployment.yml for jobs or services without internet interaction (Optional)
-- `deployment.job_name` (String, optional): Job deployment name (Note: Underscores are not accepted). Sample: `my-app-job`. Note: This deployment is created only if this value is present
-- `deployment.job_command` (String, optional): Bash command to be used for job container. Sample: `bundle exec sidekiq`
-- `deployment.job_sidekiq_alive_gem` (Boolean, default false): If true will add liveness checker settings using `sidekiq_alive_gem` (`sidekiq_alive` gem needs to be present in your Gemfile)
-- `deployment.job_services` (Array, Optional, only `job_sidekiq_alive_gem` or `job_services` is allowed): List of linux service names that are required for a healthy job container. Sample: `['sidekiq', 'cron']` 
-- `deployment.job_resources` (Hash, optional): Configure depending on the job app requirements. Sample: `{ cpu: { max: '1', min: '500m' }, mem: { max: '1Gi', min: '500Mi' } }`
+- `deployment.job_apps[].name` (String, optional): Job deployment name (Note: Underscores are not accepted). Sample: `my-app-job`. Note: This deployment is created only if this value is present
+- `deployment.job_apps[].command` (String, optional): Bash command to be used for job container. Sample: `bundle exec sidekiq`
+- `deployment.job_apps[].sidekiq_alive_gem` (Boolean, default false): If true will add liveness checker settings using `sidekiq_alive_gem` (`sidekiq_alive` gem needs to be present in your Gemfile)
+- `deployment.job_apps[].services` (Array, Optional): List of linux service names that are required for a healthy job container. Sample: `['sidekiq', 'cron']`. Note: This will be ignored if `sidekiq_alive_gem` was defined.     
+- `deployment.job_apps[].resources` (Hash, optional): Configure depending on the job app requirements. Sample: `{ cpu: { max: '1', min: '500m' }, mem: { max: '1Gi', min: '500Mi' } }`
 
 ### Applications secrets.yml (Optional)
 - `secrets.name` (String): K8s secrets name where env vars will be saved and fetched from. Sample: `my-app-secrets`
@@ -88,7 +88,7 @@ Configuration and customization can be done for multiple environments and at any
 - `continuous_deployment.update_deployment` (Boolean, default: false): If true permits to re-generate and update the k8s deployment(s) before applying the new version (new docker image)
 
 ### Gem templating partials
-- `_container_extra_settings.yml` Partial template to add custom container settings. Receives `pod` as local variable (`web` | `job` | `cloudsql` | `logs`). Sample:
+- `_container_extra_settings.yml` Partial template to add custom container settings. Receives `pod` as local variable (`web` | `job` | `cloudsql` | `logs`) and `pod_name`. Sample:
   ```yaml
                <% if locals[:pod] == 'job' %>
                resources:
@@ -100,7 +100,7 @@ Configuration and customization can be done for multiple environments and at any
                    memory: 1Gi
                <% end %>
   ``` 
-- `_custom_containers.yml` Partial template to add extra containers (Receives `pod` as local variable: `web` | `job`). Sample:
+- `_custom_containers.yml` Partial template to add extra containers (Receives `pod` as local variable: `web` | `job`) and `pod_name`. Sample:
 ```yaml
            <% if locals[:pod] == 'job' %>
            - name: scraper

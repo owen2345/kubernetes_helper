@@ -18,9 +18,10 @@ RSpec.describe KubernetesHelper::Core do
     let(:input_yml) { 'file1.yml' }
     let(:output_yml) { 'file2.yml' }
     before do
+      allow(File).to receive(:read).and_call_original
       allow(File).to receive(:read).with(input_yml).and_return(sample_yml)
     end
-    after { inst.parse_yml_file(input_yml, output_yml) }
+    after { |test| inst.parse_yml_file(input_yml, output_yml) unless test.metadata[:skip_after] }
 
     it 'replaces config values' do
       expect(mock_file).to receive(:write).with(/#{settings[:sample][:value1]}/)
@@ -75,6 +76,19 @@ spec:
             expect(content).to include('key: paper_trail_port')
           end
         end
+      end
+    end
+
+    describe 'when including multiple job pods' do
+      it 'includes pod settings for all job pods', skip_after: true do
+        settings = inst.config_values
+        job_pods = [{ name: 'pod1', command: 'cmd 1' }, { name: 'pod2', command: 'cmd 2' }]
+        settings[:deployment][:job_apps] = job_pods
+        job_pods.each do |pod|
+          allow(mock_file).to receive(:write).with(include("name: #{pod[:name]}"))
+          allow(mock_file).to receive(:write).with(include(pod[:command]))
+        end
+        inst.parse_yml_file('lib/templates/deployment.yml', output_yml)
       end
     end
 

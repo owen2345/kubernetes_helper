@@ -13,7 +13,7 @@ documents:
         rollingUpdate:
           maxSurge: 1
           maxUnavailable: 1
-      minReadySeconds: 5
+      minReadySeconds: 10
       template:
         metadata:
           labels:
@@ -98,18 +98,19 @@ documents:
           volumes:
             <%= include_template "_volumes.yml", { pod: 'web' } %>
 
-
-  <% if deployment.job_name %>
+  <% deployment.job_apps.each do |job_app| %>
   - apiVersion: apps/v1
     kind: Deployment
     metadata:
-      name: &job_app_name <%=deployment.job_name%>
+      name: &job_app_name <%= job_app[:name] %>
     spec:
       <<: *default_spec
       replicas: 1
       selector:
         matchLabels:
           name: *job_app_name
+      strategy:
+        type: Recreate
       template:
         metadata:
           labels:
@@ -119,18 +120,18 @@ documents:
           containers:
             - <<: *app_container
               name: *job_app_name
-              <% if deployment.job_command %>
-              command: [ "/bin/bash", "-c", "<%= deployment.job_command %>" ]
+              <% if job_app[:command] %>
+              command: [ "/bin/bash", "-c", "<%= job_app[:command] %>" ]
               <% end %>
-              <% if deployment.job_resources %>
-              <%= include_template "_resources.yml", deployment.job_resources %>
+              <% if job_app[:resources] %>
+              <%= include_template "_resources.yml", job_app[:resources] %>
               <% end %>
-              <%= include_template "_container_extra_settings.yml", { pod: 'job' } %>
+              <%= include_template "_container_extra_settings.yml", { pod: 'job', pod_name: job_app[:name] } %>
 
-            <% if deployment.job_sidekiq_alive_gem %>
-              <%= include_template "_sidekiq_alive_gem.yml" %>
+            <% if job_app[:sidekiq_alive_gem] %>
+            <%= include_template "_sidekiq_alive_gem.yml" %>
             <% else %>
-              <%= include_template "_job_liveness.yml" %>
+            <%= include_template "_job_liveness.yml" %>
             <% end %>
 
             <% if deployment.cloud_secret_name %>
@@ -141,10 +142,10 @@ documents:
             - <<: *logs_container
             <% end %>
 
-            <%= include_template "_custom_containers.yml", { pod: 'job' } %>
+            <%= include_template "_custom_containers.yml", { pod: 'job', pod_name: job_app[:name] } %>
 
           volumes:
-            <%= include_template "_volumes.yml", { pod: 'job' } %>
+            <%= include_template "_volumes.yml", { pod: 'job', pod_name: job_app[:name] } %>
   <% end %>
 
   <% if deployment.replicas_range %>
