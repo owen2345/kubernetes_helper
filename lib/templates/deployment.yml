@@ -26,6 +26,11 @@ documents:
               command: ["/bin/bash", "-c", "<%= deployment.command %>"]
               <% end %>
               name: *app_name
+              <% (secrets.import_secrets ? [secrets.name] :  []).each do |name| %>
+              envFrom:
+              - secretRef:
+                  name: <%= name %>
+              <% end %>
               static_env: true
               import_secrets: ['secrets.yml', '<%=secrets.name%>']
               ports:
