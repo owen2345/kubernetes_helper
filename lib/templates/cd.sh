@@ -19,6 +19,11 @@ LATEST_NAME="${IMAGE_NAME}:<%= continuous_deployment.image_tag || 'latest' %>"
 <%= include_template "_cd_google.sh" if continuous_deployment.image_name.include?('gcr.io/') %>
 <%= include_template "_cd_digital.sh" if continuous_deployment.image_name.include?('digitalocean.com/') %>
 
+## Update new secrets defined in secrets.yml as ENV vars for deployments
+<% if continuous_deployment.update_deployment %>
+  kubernetes_helper run_yml 'deployment.yml' 'kubectl apply'
+<% end %>
+
 ## Apply deployments
 IFS=',' read -r -a deployments <<< "$DEPLOYMENTS"
 for deployment in "${deployments[@]}"; do
@@ -26,8 +31,3 @@ for deployment in "${deployments[@]}"; do
 
   <%= include_template "_cd_apply_images.sh" %>
 done
-
-## Update new secrets defined in secrets.yml as ENV vars for deployments
-<% if continuous_deployment.update_deployment %>
-  kubernetes_helper run_yml 'deployment.yml' 'kubectl apply'
-<% end %>
