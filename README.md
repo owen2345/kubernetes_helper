@@ -58,8 +58,8 @@ Configuration and customization can be done for multiple environments and at any
 ### Applications secrets.yml (Optional)
 - `secrets.name` (String): K8s secrets name where env vars will be saved and fetched from. Sample: `my-app-secrets`
 - `secrets.import_all_secrets` (Boolean, default false): 
-  - `true`: Allows k8s to auto import all secrets from `secrets.yml` as env values for the apps
-  - `false`: Permits to the gem to auto include each secret from secrets.yml as env value for the apps (base-64 values)
+  - `true`: Allows k8s to auto import all secrets from `secrets.yml` as env values for the apps (No longer needed to update `deployment.yml` everytime there is a new env var)
+  - `false`: Permits to the gem to auto include each secret from `secrets.yml -> data` as env value for the apps (base64 encoded values. Requires to update `deployment.yml` everytime there is a new env var)
     
 ### Application service.yml (Optional)
 - `service.name`: K8s service name. Sample: `my-app-service`

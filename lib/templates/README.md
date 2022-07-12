@@ -25,9 +25,8 @@
     DEPLOY_ENV=beta kubernetes_helper run_command "kubectl create secret generic <%=deployment.cloud_secret_name%> --from-file=credentials.json=<path-to-downloaded/credentials.json>"
     ```
     
-- Register manually env vars (values must be encrypted using base64)     
+- Register manually env vars     
     Open and register secret values in `.kubernetes/secrets.yml`     
-    Note: Enter base64 encoded values      
     ```bash
     DEPLOY_ENV=beta kubernetes_helper run_yml 'secrets.yml' 'kubectl create'
     # kubectl get secrets # to list all secrets registered
