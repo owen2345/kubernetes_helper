@@ -23,7 +23,7 @@ settings = {
   },
   secrets: {
     name: "#{app_name}-secrets",
-    import_secrets: true
+    import_all_secrets: true
   },
   service: {
     name: app_name,

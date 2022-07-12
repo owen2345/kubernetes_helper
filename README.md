@@ -57,7 +57,10 @@ Configuration and customization can be done for multiple environments and at any
 
 ### Applications secrets.yml (Optional)
 - `secrets.name` (String): K8s secrets name where env vars will be saved and fetched from. Sample: `my-app-secrets`
-
+- `secrets.import_all_secrets` (Boolean, default false): 
+  - `true`: Allows k8s to auto import all secrets from `secrets.yml` as env values for the apps
+  - `false`: Permits to the gem to auto include each secret from secrets.yml as env value for the apps (base-64 values)
+    
 ### Application service.yml (Optional)
 - `service.name`: K8s service name. Sample: `my-app-service`
 - `service.port_name` (String, default `http-port`): Http port name to connect between k8s ingress and service. Sample: `http-port`. Note: max 15 characters
