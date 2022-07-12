@@ -21,7 +21,7 @@ documents:
         spec: &template_spec
           containers:
             - &app_container
-              image: '<%= continuous_deployment.image_name %>:<%= continuous_deployment.image_tag || "latest" %>'
+              image: '<%= continuous_deployment.image_name %>:<%= ENV['DEPLOY_IMAGE_TAG'] || continuous_deployment.image_tag || "latest" %>'
               <% if deployment.command %>
               command: ["/bin/bash", "-c", "<%= deployment.command %>"]
               <% end %>

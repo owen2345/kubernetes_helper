@@ -21,7 +21,7 @@ LATEST_NAME="${IMAGE_NAME}:<%= continuous_deployment.image_tag || 'latest' %>"
 
 ## Update new secrets defined in secrets.yml as ENV vars for deployments
 <% if continuous_deployment.update_deployment %>
-  kubernetes_helper run_yml 'deployment.yml' 'kubectl apply'
+  DEPLOY_IMAGE_TAG=$CI_COMMIT_SHA kubernetes_helper run_yml 'deployment.yml' 'kubectl apply'
 <% end %>
 
 ## Apply deployments
