@@ -3,13 +3,13 @@
     metadata:
       name: &job_app_name <%= locals[:job_app][:name] %>
     spec:
-      <<: *default_spec
       replicas: 1
       selector:
         matchLabels:
           name: *job_app_name
       strategy:
         type: Recreate
+      minReadySeconds: 10
       template:
         metadata:
           labels:

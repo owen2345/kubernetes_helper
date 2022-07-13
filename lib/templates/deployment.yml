@@ -3,7 +3,7 @@ documents:
     kind: Deployment
     metadata:
       name: &app_name <%=deployment.name%>
-    spec: &default_spec
+    spec:
       replicas: <%=deployment.replicas%>
       selector:
         matchLabels:

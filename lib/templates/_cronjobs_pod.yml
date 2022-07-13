@@ -1,18 +1,18 @@
-  - apiVersion: apps/v1
+  - apiVersion: batch/v1
     kind: CronJob
     metadata:
       name: &cronjob_name <%= locals[:job_app][:name] %>
     spec:
-      <<: *default_spec
       schedule: "<%= locals[:job_app][:schedule] %>"
       concurrencyPolicy: "<%= locals[:job_app][:concurrency_policy] || 'Forbid' %>"
+      suspend: <%= locals[:job_app][:suspend] || false %>
       # startingDeadlineSeconds: 200
-      # suspend: false
       jobTemplate:
         spec:
           template:
             spec:
               <<: *template_spec
+              restartPolicy: OnFailure
               containers:
                 - <<: *app_container
                   name: *cronjob_name
@@ -22,8 +22,9 @@
                   <% if locals[:job_app][:resources] %>
                   <%= include_template "_resources.yml", locals[:job_app][:resources].merge(tab: 2) %>
                   <% end %>
-                  restartPolicy: OnFailure
-                <%= include_template "_container_extra_settings.yml", { pod: 'job', pod_name: locals[:job_app][:name], tab: 2 } %>
+                  livenessProbe: []
+                  readinessProbe: []
+                  <%= include_template "_container_extra_settings.yml", { pod: 'job', pod_name: locals[:job_app][:name], tab: 2 } %>
 
                 <% if deployment.cloud_secret_name %>
                 - *cloudsql_container

@@ -57,8 +57,9 @@ Configuration and customization can be done for multiple environments and at any
 
 ### Required settings for Cronjob apps (Note: Cronjobs do not support `sidekiq_alive_gem` and `services`)
 - `deployment.job_apps[].schedule` (String): Cron schedule. Sample: `*/5 * * * *`
-- `deployment.job_apps[].kind` (String, default `Deployment`): [`Deployment` or `CronJob`]
-- `deployment.job_apps[].concurrency_policy` (String, default `Forbid`):
+- `deployment.job_apps[].kind` (String, default `Deployment`): Kind of job application [`Deployment` or `CronJob`]
+- `deployment.job_apps[].concurrency_policy` (String, default `Forbid`): [Documentation](https://kubernetes.io/docs/tasks/job/automated-tasks-with-cron-jobs/#concurrency-policy)
+- `deployment.job_apps[].suspend` (String, default `false`): If `true` then marks as finished the job application (stops creating new pods).
 
 ### Applications secrets.yml (Optional)
 - `secrets.name` (String): K8s secrets name where env vars will be saved and fetched from. Sample: `my-app-secrets`

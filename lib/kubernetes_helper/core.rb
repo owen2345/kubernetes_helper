@@ -95,12 +95,13 @@ module KubernetesHelper
 
     # parse secrets auto importer
     def parse_import_secrets(document) # rubocop:disable Metrics/AbcSize
-      containers = document.dig('spec', 'template', 'spec', 'containers') || []
+      cronjob_containers = document.dig('spec', 'jobTemplate', 'spec', 'template', 'spec', 'containers')
+      containers = document.dig('spec', 'template', 'spec', 'containers') || cronjob_containers || []
       containers.each do |container|
         container['env'] = (container['env'] || [])
-        container['env'] = container['env'] + static_env_vars if container.delete('static_env')
+        container['env'] = (container['env'] + static_env_vars).uniq if container.delete('static_env')
         if container['import_secrets']
-          container['env'] = container['env'] + import_secrets(*container['import_secrets'])
+          container['env'] = (container['env'] + import_secrets(*container['import_secrets'])).uniq
           container.delete('import_secrets')
         end
       end
