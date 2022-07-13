@@ -55,6 +55,11 @@ Configuration and customization can be done for multiple environments and at any
 - `deployment.job_apps[].services` (Array, Optional): List of linux service names that are required for a healthy job container. Sample: `['sidekiq', 'cron']`. Note: This will be ignored if `sidekiq_alive_gem` was defined.     
 - `deployment.job_apps[].resources` (Hash, optional): Configure depending on the job app requirements. Sample: `{ cpu: { max: '1', min: '500m' }, mem: { max: '1Gi', min: '500Mi' } }`
 
+### Required settings for Cronjob apps (Note: Cronjobs do not support `sidekiq_alive_gem` and `services`)
+- `deployment.job_apps[].schedule` (String): Cron schedule. Sample: `*/5 * * * *`
+- `deployment.job_apps[].kind` (String, default `Deployment`): [`Deployment` or `CronJob`]
+- `deployment.job_apps[].concurrency_policy` (String, default `Forbid`):
+
 ### Applications secrets.yml (Optional)
 - `secrets.name` (String): K8s secrets name where env vars will be saved and fetched from. Sample: `my-app-secrets`
 - `secrets.import_all_secrets` (Boolean, default false): 

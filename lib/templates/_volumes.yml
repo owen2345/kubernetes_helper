@@ -18,4 +18,4 @@
                 <% end %>
               <% end %>
 
-            <%= include_template "_custom_volumes.yml", { pod: locals[:pod] } %>
+            <%= include_template "_custom_volumes.yml", { pod: locals[:pod], tab: locals[:tab] } %>

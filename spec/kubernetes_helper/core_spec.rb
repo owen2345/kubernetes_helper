@@ -76,7 +76,7 @@ RSpec.describe KubernetesHelper::Core do
       end
     end
 
-    describe 'when including multiple job pods' do
+    describe 'when building job pods' do
       it 'includes pod settings for all job pods', skip_after: true do
         settings = inst.config_values
         job_pods = [{ name: 'pod1', command: 'cmd 1' }, { name: 'pod2', command: 'cmd 2' }]
@@ -86,6 +86,16 @@ RSpec.describe KubernetesHelper::Core do
           allow(mock_file).to receive(:write).with(include(pod[:command]))
         end
         inst.parse_yml_file(input_yml, output_yml)
+      end
+
+      describe 'when building a cronjob app' do
+        it 'generates the cronjob deployment yml content' do
+          settings = inst.config_values
+          settings[:deployment][:job_apps] = [{ name: 'pod1', kind: 'CronJob', schedule: '*' }]
+          expect(mock_output_file).to receive(:write).with(include('concurrencyPolicy: Forbid'))
+          expect(mock_output_file).to receive(:write).with(include('kind: CronJob'))
+          inst.parse_yml_file(input_yml, output_yml)
+        end
       end
     end
   end

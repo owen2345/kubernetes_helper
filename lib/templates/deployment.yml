@@ -107,53 +107,8 @@ documents:
             <%= include_template "_volumes.yml", { pod: 'web' } %>
 
   <% deployment.job_apps.each do |job_app| %>
-  - apiVersion: apps/v1
-    kind: Deployment
-    metadata:
-      name: &job_app_name <%= job_app[:name] %>
-    spec:
-      <<: *default_spec
-      replicas: 1
-      selector:
-        matchLabels:
-          name: *job_app_name
-      strategy:
-        type: Recreate
-      template:
-        metadata:
-          labels:
-            name: *job_app_name
-        spec:
-          <<: *template_spec
-          containers:
-            - <<: *app_container
-              name: *job_app_name
-              <% if job_app[:command] %>
-              command: [ "/bin/bash", "-c", "<%= job_app[:command] %>" ]
-              <% end %>
-              <% if job_app[:resources] %>
-              <%= include_template "_resources.yml", job_app[:resources] %>
-              <% end %>
-              <%= include_template "_container_extra_settings.yml", { pod: 'job', pod_name: job_app[:name] } %>
-
-            <% if job_app[:sidekiq_alive_gem] %>
-            <%= include_template "_sidekiq_alive_gem.yml" %>
-            <% else %>
-            <%= include_template "_job_liveness.yml" %>
-            <% end %>
-
-            <% if deployment.cloud_secret_name %>
-            - *cloudsql_container
-            <% end %>
-
-            <% if deployment.log_container %>
-            - <<: *logs_container
-            <% end %>
-
-            <%= include_template "_custom_containers.yml", { pod: 'job', pod_name: job_app[:name] } %>
-
-          volumes:
-            <%= include_template "_volumes.yml", { pod: 'job', pod_name: job_app[:name] } %>
+  <%= include_template '_jobs_pod.yml', job_app: job_app if job_app[:kind] != 'CronJob' %>
+  <%= include_template '_cronjobs_pod.yml', job_app: job_app if job_app[:kind] == 'CronJob' %>
   <% end %>
 
   <% if deployment.replicas_range %>

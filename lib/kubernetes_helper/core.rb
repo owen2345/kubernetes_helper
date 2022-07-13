@@ -78,6 +78,7 @@ module KubernetesHelper
     def render_template(template_name, locals = {})
       path = KubernetesHelper.settings_path(template_name, use_template: true)
       text = "\n#{File.read(path)}"
+      text = text.gsub("\n", "\n#{'  ' * locals[:tab]}") if locals[:tab]
       replace_config_variables(text, locals)
     end
 
