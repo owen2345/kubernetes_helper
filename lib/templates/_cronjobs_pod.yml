@@ -22,6 +22,7 @@
                   <% if locals[:job_app][:resources] %>
                   <%= include_template "_resources.yml", locals[:job_app][:resources].merge(tab: 2) %>
                   <% end %>
+                  ports: [ ]
                   livenessProbe: null
                   readinessProbe: null
                   <%= include_template "_container_extra_settings.yml", { pod: 'job', pod_name: locals[:job_app][:name], tab: 2 } %>
