@@ -30,7 +30,7 @@
             <% if locals[:job_app][:sidekiq_alive_gem] %>
             <%= include_template "_sidekiq_alive_gem.yml" %>
             <% else %>
-            <%= include_template "_job_liveness.yml" %>
+            <%= include_template "_job_liveness.yml", { services: locals[:job_app][:services] } %>
             <% end %>
 
             <% if deployment.cloud_secret_name %>

@@ -1,12 +1,15 @@
               ports: [ ]
-              <% if (deployment.job_services || []).any? %>
+              <% if (locals[:services] || []).any? %>
               livenessProbe: &liveness_probe
                 exec:
                    command: [ /bin/sh, -c,
-                     'if [ $(ps -ef | grep "<%= deployment.job_services.join("\\|") %>" | grep -v "grep" | wc -l) -lt <%= deployment.job_services.count %> ]; then
+                     'if [ $(ps -ef | grep "<%= locals[:services].join("\\|") %>" | grep -v "grep" | wc -l) -lt <%= locals[:services].count %> ]; then
                                echo "Some required services are not running"; exit 1;
                            fi' ]
                 initialDelaySeconds: 120
                 periodSeconds: 30
               readinessProbe: *liveness_probe
+              <% else %>
+              livenessProbe: null
+              readinessProbe: null
               <% end %>
