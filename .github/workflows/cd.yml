@@ -1,0 +1,33 @@
+name: Continous Deployment
+on:
+  # triggered once "App tests" (tests.yml) successfully completed for any release (auto deploy to staging)
+  workflow_run:
+    workflows: [ "App tests" ]
+    branches: [ "release/**" ]
+    types:
+      - completed
+
+  # when release PR OR Hotfix was merged, then deploy to production
+  push:
+    branches:
+      - main
+      - master
+
+  # manually deploy any branch to a specific environment
+  workflow_dispatch:
+    inputs:
+      deploy_env:
+        type: choice
+        required: true
+        default: 'beta'
+        options:
+          - beta
+          - production
+        description: 'Deploy environment'
+
+jobs:
+  continuoues-deployment:
+    uses: owen2345/shareable-github-workflows/.github/workflows/cd.yml@main
+    secrets:
+      PROD_GOOGLE_AUTH: ${{ secrets.PROD_GOOGLE_AUTH }}
+      BETA_GOOGLE_AUTH: ${{ secrets.STAGING_DEPLOY_ENV }}
