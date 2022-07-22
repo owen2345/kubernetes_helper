@@ -1,31 +1,11 @@
 name: App tests
-
 on:
-  push:
-    branches:
-      - main
-      - staging
   pull_request:
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-      - name: Cancel previous Workflow Actions
-        uses: styfle/cancel-workflow-action@0.6.0
-        with:
-          access_token: ${{ github.token }}
-      - name: download docker-compose cache
-        run: docker-compose pull
-      - uses: satackey/action-docker-layer-caching@v0.0.11 # Cache or restore docker cache
-        continue-on-error: true # Ignore the failure of a step and avoid terminating the job.
-        with:
-          key: app_docker
-
-      - name: Run rspec test
-        run: docker-compose run test /bin/sh -c "rspec"
-      - name: Check codestyle
-        run: docker-compose run test /bin/sh -c "rubocop"
+  app-tests:
+    uses: owen2345/shareable-github-workflows/.github/workflows/tests.yml@main
+    with:
+      prepare_db_cmd: null
+      run_rubocop: true
+      rspec_cmd: 'bundle exec rspec'
