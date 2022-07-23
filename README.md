@@ -49,6 +49,7 @@ Configuration and customization can be done for multiple environments and at any
 - `deployment.logs_resources` (Hash, optional): Configure depending on the app requirements. Default: `{ cpu: { max: '200m', min: '50m' }, mem: { max: '200Mi', min: '50Mi' } }`
 
 ### Application deployment.yml for jobs or services without internet interaction (Optional)
+Ideal to run sidekiq or similar jobs without internet connection. (TODO)
 - `deployment.job_apps[].name` (String, optional): Job deployment name (Note: Underscores are not accepted). Sample: `my-app-job`. Note: This deployment is created only if this value is present
 - `deployment.job_apps[].command` (String, optional): Bash command to be used for job container. Sample: `bundle exec sidekiq`
 - `deployment.job_apps[].sidekiq_alive_gem` (Boolean, default false): If true will add liveness checker settings using `sidekiq_alive_gem` (`sidekiq_alive` gem needs to be present in your Gemfile)
@@ -56,6 +57,7 @@ Configuration and customization can be done for multiple environments and at any
 - `deployment.job_apps[].resources` (Hash, optional): Configure depending on the job app requirements. Sample: `{ cpu: { max: '1', min: '500m' }, mem: { max: '1Gi', min: '500Mi' } }`
 
 ### Required settings for Cronjob apps (Note: Cronjobs do not support `sidekiq_alive_gem` and `services`)
+Ideal to asasas (TODO)
 - `deployment.job_apps[].schedule` (String): Cron schedule. Sample: `*/5 * * * *`
 - `deployment.job_apps[].kind` (String, default `Deployment`): Kind of job application [`Deployment` or `CronJob`]
 - `deployment.job_apps[].concurrency_policy` (String, default `Forbid`): [Documentation](https://kubernetes.io/docs/tasks/job/automated-tasks-with-cron-jobs/#concurrency-policy)
