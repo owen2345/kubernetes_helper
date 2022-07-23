@@ -17,6 +17,6 @@ name: Create Release
 
 jobs:
   release-builder:
-    uses: owen2345/delme/.github/workflows/release_builder.yml@main
+    uses: owen2345/reusable-ci-cd-actions/.github/workflows/release_builder.yml@main
     with:
       commit_mode: true
