@@ -1,0 +1,11 @@
+name: Create release from tag
+on:
+  push:
+    tags: # Create a release once a git tag is published
+      - '*'
+
+jobs:
+  release-builder:
+    uses: owen2345/reusable-ci-cd-actions/.github/workflows/release_builder_from_tag.yml@main
+    with:
+      commit_mode: true
