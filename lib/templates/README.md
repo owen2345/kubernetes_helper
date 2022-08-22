@@ -84,50 +84,10 @@ This gem comes with continuous deployment script out of the box which can be exe
     PROD_CLOUD_TOKEN=<secret content here>
   ```
   
-* Add github workflow to automatically run deployment when merged into master or staging, something like:    
-```yml
-name: "Continuous Deployment"
-on:
-  push:
-    branches: 
-      - master
-      - staging
-
-deployment:
-  runs-on: ubuntu-latest
-  jobs:
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          ref: ${{ env.DEPLOY_BRANCH }}
-      - name: Cancel previous Workflow Actions
-        uses: styfle/cancel-workflow-action@0.6.0
-        with:
-          access_token: ${{ github.token }}
-
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@master
-      - uses: satackey/action-docker-layer-caching@v0.0.11
-        continue-on-error: true
-        with:
-          key: CD-docker-cache-${{ hashFiles('Dockerfile', 'Gemfile.lock') }}
-
-      #### App deployment          
-      - run: sudo gem install kubernetes_helper
-      - name: App deployment
-        env:
-          KB_AUTH_TOKEN: ${{ github.ref_name == 'master' && secrets.PROD_CLOUD_TOKEN || secrets.BETA_CLOUD_TOKEN }}
-          DEPLOY_ENV: ${{ github.ref_name == 'master' && 'production' || 'beta' }}
-        run: kubernetes_helper run_deployment 'cd.sh'
-```   
+* Add github workflow to automatically run deployment when merged into master or staging: [See here](https://github.com/owen2345/reusable-ci-cd-actions#continuous-deployment)
   
-## Apply any k8s setting changes
-- Secrets    
-  Open kubernetes secrets and add/edit/remove values and then save it    
-  `kubectl edit secret ...`
-  Once secrets were updated, then restart all related pods, see: https://medium.com/devops-dudes/how-to-propagate-a-change-in-kubernetes-secrets-by-restarting-dependent-pods-b71231827656
-  
-- Other settings    
+## Apply deployment changes manually     
+  Note: it can be enable for auto update with (`settings.rb`): `update_deployment: true`
   ```bash
     DEPLOY_ENV=beta kubernetes_helper run_yml 'deployment.yml' 'kubectl apply'
-  ```  
+  ```
