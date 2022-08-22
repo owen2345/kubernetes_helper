@@ -12,11 +12,7 @@ fi
 
 ## Build and push containers
 echo "****** building image..."
-<% if continuous_deployment.docker_cmd %>
-  <%= continuous_deployment.docker_cmd %>
-<% else %>
-  docker <%=continuous_deployment.docker_build_cmd || 'build -f Dockerfile'%> -t $DEPLOY_NAME .
-<% end %>
+eval $DOCKER_BUILD_CMD
 docker push $DEPLOY_NAME
 
 echo "****** tagging image $DEPLOY_NAME as $LATEST_NAME"

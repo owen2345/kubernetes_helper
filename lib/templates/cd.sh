@@ -16,6 +16,12 @@ CI_COMMIT_SHA=${CI_COMMIT_SHA:-$(date +%s) }
 DEPLOY_NAME="${IMAGE_NAME}:${CI_COMMIT_SHA}"
 LATEST_NAME="${IMAGE_NAME}:<%= continuous_deployment.image_tag || 'latest' %>"
 
+<% if continuous_deployment.docker_cmd %>
+  DOCKER_BUILD_CMD="<%= continuous_deployment.docker_cmd %>"
+<% else %>
+  DOCKER_BUILD_CMD="docker <%=continuous_deployment.docker_build_cmd || 'build -f Dockerfile'%> -t $DEPLOY_NAME --build-arg DEPLOY_VERSION=${DEPLOY_VERSION} ."
+<% end %>
+
 <%= include_template "_cd_google.sh" if continuous_deployment.image_name.include?('gcr.io/') %>
 <%= include_template "_cd_digital.sh" if continuous_deployment.image_name.include?('digitalocean.com/') %>
 

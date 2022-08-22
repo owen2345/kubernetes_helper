@@ -23,11 +23,7 @@ if [ -z $ALREADY_DEPLOYED ]
 then
   ## Build and push containers
   echo "****** image not created yet, building image..."
-  <% if continuous_deployment.docker_cmd %>
-    <%= continuous_deployment.docker_cmd %>
-  <% else %>
-    docker <%=continuous_deployment.docker_build_cmd || 'build -f Dockerfile'%> -t $DEPLOY_NAME .
-  <% end %>
+  eval $DOCKER_BUILD_CMD
   docker push $DEPLOY_NAME
 else
   echo "****** image was already created: $ALREADY_DEPLOYED"
