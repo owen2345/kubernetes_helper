@@ -86,7 +86,8 @@ module KubernetesHelper
         command: settings[:deployment][:job_command],
         services: settings[:deployment][:job_services],
         resources: settings[:deployment][:job_resources],
-        sidekiq_alive_gem: settings[:deployment][:job_sidekiq_alive_gem]
+        sidekiq_alive_gem: settings[:deployment][:job_sidekiq_alive_gem],
+        rolling_update: settings[:deployment][:job_rolling_update]
       }
     ]
   end

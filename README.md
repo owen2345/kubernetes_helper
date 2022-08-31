@@ -55,6 +55,7 @@ Ideal to run sidekiq or similar jobs as a service without interacting via HTTP.
 - `deployment.job_apps[].sidekiq_alive_gem` (Boolean, default false): If true will add liveness checker settings using `sidekiq_alive_gem` (`sidekiq_alive` gem needs to be present in your Gemfile)
 - `deployment.job_apps[].services` (Array, Optional): List of linux service names that are required for a healthy job container. Sample: `['sidekiq', 'cron']`. Note: This will be ignored if `sidekiq_alive_gem` was defined.     
 - `deployment.job_apps[].resources` (Hash, optional): Configure depending on the job app requirements. Sample: `{ cpu: { max: '1', min: '500m' }, mem: { max: '1Gi', min: '500Mi' } }`
+- `deployment.job_apps[].rolling_update` (Boolean, default false): Uses `rollingUpdate` strategy instead of `recreate` (https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#rolling-update-deployment) 
 Sample:    
   ```ruby
   {

@@ -8,7 +8,14 @@
         matchLabels:
           name: *job_app_name
       strategy:
+        <% if locals[:job_app][:rolling_update] %>
+        type: RollingUpdate
+        rollingUpdate:
+          maxSurge: 1
+          maxUnavailable: 0
+        <% else %>
         type: Recreate
+        <% end %>
       minReadySeconds: 10
       template:
         metadata:
