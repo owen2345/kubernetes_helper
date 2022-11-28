@@ -8,7 +8,7 @@
 
 ---
 
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: '<%=ingress.name%>'
@@ -26,6 +26,8 @@ metadata:
     <% end %>
 
 spec:
-  backend:
-    serviceName: '<%=service.name%>'
-    servicePort: '<%=service.port_name%>'
+  defaultBackend:
+    service:
+      name: '<%=service.name%>'
+      port:
+        name: '<%=service.port_name%>'
