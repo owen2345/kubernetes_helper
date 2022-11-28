@@ -1,6 +1,6 @@
 # locals: { domains: Hash(domain => cert_name) }
 <% locals[:domains].each do |domain, cert_name| %>
-apiVersion: networking.gke.io/v1beta1
+apiVersion: networking.gke.io/v1
 kind: ManagedCertificate
 metadata:
   name: '<%= cert_name %>'
