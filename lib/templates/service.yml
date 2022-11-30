@@ -7,6 +7,10 @@ metadata:
   name: '<%=service.name%>-bconfig'
 spec:
   timeoutSec: 1800
+  <% if deployment.liveness_path %>
+  healthCheck:
+    requestPath: <%= deployment.liveness_path %>
+  <% end %>
 ---
 <% end %>
 
