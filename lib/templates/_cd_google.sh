@@ -14,6 +14,7 @@ then
   export USE_GKE_GCLOUD_AUTH_PLUGIN=True
   gcloud components install gke-gcloud-auth-plugin
   gcloud auth activate-service-account --key-file $AUTH_PATH --project $PROJECT_NAME
+  gcloud auth configure-docker
   gcloud docker --authorize-only --project $PROJECT_NAME
   gcloud container clusters get-credentials $CLUSTER_NAME --region $CLUSTER_REGION
   ## ***** END GOOGLE CONNECTOR
