@@ -8,6 +8,18 @@
 
 ---
 
+<% if ingress.certificate_domain && cloud.name == 'gcloud' %>
+# Https redirection
+apiVersion: networking.gke.io/v1beta1
+kind: FrontendConfig
+metadata:
+  name: ssl-redirect-<%=ingress.name%>
+spec:
+  redirectToHttps:
+    enabled: true
+---
+<% end %>
+
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -23,6 +35,7 @@ metadata:
 
     <% if ingress.certificate_domain %>
     networking.gke.io/managed-certificates: '<%= domains.values.join(", ") %>'
+    networking.gke.io/v1beta1.FrontendConfig: ssl-redirect-<%=ingress.name%>
     <% end %>
 
 spec:
