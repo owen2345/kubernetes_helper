@@ -2,10 +2,10 @@
               <% if (locals[:services] || []).any? %>
               livenessProbe: &liveness_probe
                 exec:
-                   command: [ /bin/sh, -c,
-                     'if [ $(ps -ef | grep "<%= locals[:services].join("\\|") %>" | grep -v "grep" | wc -l) -lt <%= locals[:services].count %> ]; then
-                               echo "Some required services are not running"; exit 1;
-                           fi' ]
+                   command:
+                     - /bin/sh
+                     - -c
+                     - '<%= locals[:services].map { |svc| "if [ $(ps -ef | grep \"#{svc}\" | grep -v \"grep\" | wc -l) -eq 0 ]; then echo \"Missing service: #{svc}\"; exit 1; fi" }.join('; ') %>'
                 initialDelaySeconds: 120
                 periodSeconds: 30
               readinessProbe: *liveness_probe
