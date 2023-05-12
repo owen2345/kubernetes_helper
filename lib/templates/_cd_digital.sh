@@ -1,8 +1,6 @@
 # Download and install doctl
 if [ -z "$(which doctl)" ]; then
-  wget https://github.com/digitalocean/doctl/releases/download/v1.72.0/doctl-1.72.0-linux-amd64.tar.gz
-  tar xf ~/doctl-1.72.0-linux-amd64.tar.gz
-  sudo mv ~/doctl /usr/local/bin
+  sudo snap install doctl
 fi
 
 if [ ! -z "$KB_AUTH_TOKEN" ]
