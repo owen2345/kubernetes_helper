@@ -39,6 +39,10 @@ metadata:
     <% end %>
 
 spec:
+
+  <% if ingress.ingress_class %>
+  ingressClassName: <%= ingress.ingress_class %>
+  <% end %>
   defaultBackend:
     service:
       name: '<%=service.name%>'
