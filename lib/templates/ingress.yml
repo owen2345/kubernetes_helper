@@ -32,6 +32,10 @@ metadata:
     <% if ingress.ip_name %>
     kubernetes.io/ingress.global-static-ip-name: "<%=ingress.ip_name%>"
     <% end %>
+    
+    <% if ingress.ingress_class.to_s == 'nginx' %>
+    nginx.ingress.kubernetes.io/proxy-body-size: <%= ingress.max_body_size || '50m' %>
+    <% end %>
 
     <% if ingress.certificate_domain %>
     networking.gke.io/managed-certificates: '<%= domains.values.join(", ") %>'
