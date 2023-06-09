@@ -24,6 +24,11 @@ metadata:
     service.beta.kubernetes.io/do-loadbalancer-certificate-id: <%= service.do_certificate_id %>
     service.beta.kubernetes.io/do-loadbalancer-redirect-http-to-https: "true"
     <% end %>
+    <% if cloud.name == 'digital_ocean' && service.load_balancer_id %>
+    kubernetes.digitalocean.com/load-balancer-id: <%= service.load_balancer_id %>
+    service.beta.kubernetes.io/do-loadbalancer-size-unit: "3"
+    service.beta.kubernetes.io/do-loadbalancer-disable-lets-encrypt-dns-records: "false"
+    <% end %>
     <% if cloud.name == 'gcloud' %>
     beta.cloud.google.com/backend-config: '{"ports": {"80":"<%=service.name%>-bconfig"}}'
     <% end %>
