@@ -42,7 +42,7 @@ spec:
       name: '<%=service.port_name%>'
       targetPort: '<%=service.backend_port_name%>'
 
-    <% if cloud.name == 'digital_ocean' && service.do_certificate_id %>
+    <% if cloud.name == 'digital_ocean' && (service.do_certificate_id || service.load_balancer_id) %>
     - name: https
       protocol: TCP
       port: 443
