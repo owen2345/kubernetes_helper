@@ -34,6 +34,10 @@ metadata:
     <% end %>
     
     <% if ingress.ingress_class.to_s == 'nginx' %>
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/hsts: "true"
+    nginx.ingress.kubernetes.io/hsts-max-age: "31536000"
+    nginx.ingress.kubernetes.io/hsts-include-subdomains: "true"
     nginx.ingress.kubernetes.io/proxy-body-size: <%= ingress.max_body_size || '50m' %>
     <% end %>
 
