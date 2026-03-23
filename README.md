@@ -192,6 +192,11 @@ it looks for the file inside kubernetes_helper template folder.
 - Add one_step_configuration.sh
 - Change `include_template` into `ERB render partial`
 
+## Deploy a new version:
+- Change version in `version.rb`
+- gem build kubernetes_helper.gemspec
+- gem push kubernetes_helper-...
+
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/kubernetes_helper. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/[USERNAME]/kubernetes_helper/blob/master/CODE_OF_CONDUCT.md).
