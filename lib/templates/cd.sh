@@ -21,6 +21,7 @@ DOCKER_BUILD_CMD="<%= continuous_deployment.docker_cmd || "docker #{continuous_d
 
 <%= include_template "_cd_google.sh" if continuous_deployment.image_name.include?('gcr.io/') %>
 <%= include_template "_cd_digital.sh" if continuous_deployment.image_name.include?('digitalocean.com/') %>
+<%= include_template "_cd_github.sh" if continuous_deployment.image_name.include?('ghcr.io/') %>
 
 <% unless ENV['SSH_PRIVATE_KEY'] %>
   ## Update new secrets defined in secrets.yml as ENV vars for deployments
